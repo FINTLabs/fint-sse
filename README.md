@@ -15,7 +15,7 @@ compile('no.fint:fint-sse:0.0.1')
 
 Create new instance
 ```java
-FintSse fintSse = new FintSse("http://localhost:8080/sse");
+FintSse fintSse = new FintSse("http://localhost:8080/sse/123");
 ```
 
 Create an event listener
