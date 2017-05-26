@@ -40,7 +40,7 @@ fintSse.connect(listener, headers);
 ```
 
 Verify connection, this will return true if the connection is open.  
-If it is closed `FintSse´will try to reconnect and return false.
+If it is closed `FintSse` will try to reconnect and return false.
 ```java
 boolean connected = fintSse.verifyConnection();
 ```
