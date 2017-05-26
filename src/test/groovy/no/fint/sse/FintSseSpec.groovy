@@ -44,6 +44,18 @@ class FintSseSpec extends Specification {
         connected
     }
 
+    def "Verify connection when connection is closed"() {
+        given:
+        fintSse.connect(listener)
+        fintSse.close()
+
+        when:
+        def connected = fintSse.verifyConnection()
+
+        then:
+        !connected
+    }
+
     def "Check if connected without connect"() {
         when:
         def connected = fintSse.isConnected()
