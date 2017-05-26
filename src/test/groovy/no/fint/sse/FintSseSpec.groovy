@@ -1,15 +1,22 @@
 package no.fint.sse
 
 import no.fint.sse.testutils.TestEventListener
+import no.fint.sse.testutils.TestSseServer
+import org.springframework.boot.context.embedded.LocalServerPort
+import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
+@SpringBootTest(classes = TestSseServer, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FintSseSpec extends Specification {
+    @LocalServerPort
+    private int port
+
     private FintSse fintSse
     private TestEventListener listener
 
     void setup() {
         listener = new TestEventListener()
-        fintSse = new FintSse('http://localhost')
+        fintSse = new FintSse("http://localhost:${port}/sse")
     }
 
     def "Connect event listener"() {
@@ -17,7 +24,7 @@ class FintSseSpec extends Specification {
         fintSse.connect(listener)
 
         then:
-        !fintSse.isConnected()
+        fintSse.isConnected()
     }
 
     def "Verify connection without connect"() {
@@ -34,7 +41,7 @@ class FintSseSpec extends Specification {
         def connected = fintSse.verifyConnection()
 
         then:
-        !connected
+        connected
     }
 
     def "Check if connected without connect"() {
@@ -51,7 +58,7 @@ class FintSseSpec extends Specification {
         def connected = fintSse.isConnected()
 
         then:
-        !connected
+        connected
     }
 
     def "Close connection"() {

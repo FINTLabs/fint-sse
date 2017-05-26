@@ -6,6 +6,5 @@ import org.glassfish.jersey.media.sse.InboundEvent;
 public class TestEventListener implements EventListener {
     @Override
     public void onEvent(InboundEvent inboundEvent) {
-
     }
 }
