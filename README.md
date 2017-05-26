@@ -39,7 +39,8 @@ Map<String, String> headeres = ImmutableMap.of("x-org-id", "mock.no");
 fintSse.connect(listener, headers);
 ```
 
-Verify connection, this will return true if the connection is open. If it is closed, it will try to reconnect and return false
+Verify connection, this will return true if the connection is open.  
+If it is closed, it will try to reconnect and return false
 ```java
 boolean connected = fintSse.verifyConnection();
 ```
