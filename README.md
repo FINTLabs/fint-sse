@@ -30,7 +30,7 @@ public class MyEventListener implements EventListener {
 
 Connect to the SSE server
 ```java
-fintSse.connect(myEventListener)
+fintSse.connect(myEventListener);
 ```
 
 It is also possible to send in headers that will be sent with the SSE request
@@ -40,8 +40,8 @@ fintSse.connect(listener, headers);
 ```
 
 Verify connection, this will return true if the connection is open. If it is closed, it will try to reconnect and return false
-```java;
-boolean connected = fintSse.verifyConnection()
+```java
+boolean connected = fintSse.verifyConnection();
 ```
 
 Close connection
