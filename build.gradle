@@ -31,6 +31,22 @@ dependencies {
     testCompile("org.spockframework:spock-spring:${spockSpringVersion}")
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleVersion
+}
+
+test {
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
 if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
     apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.11/bintray.gradle'
 }
