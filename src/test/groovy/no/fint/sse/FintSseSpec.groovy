@@ -27,6 +27,14 @@ class FintSseSpec extends Specification {
         fintSse.isConnected()
     }
 
+    def "Connect event listener with event name"() {
+        when:
+        fintSse.connect(listener, 'test1', 'test2')
+
+        then:
+        fintSse.isConnected()
+    }
+
     def "Verify connection without connect"() {
         when:
         def connected = fintSse.verifyConnection()

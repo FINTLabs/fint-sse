@@ -7,57 +7,92 @@ import org.glassfish.jersey.media.sse.SseFeature;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class FintSse {
-    private EventSource eventSource;
+    private long sseThreadInterval = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
+    private FintSseClient fintSseClient;
+
+    private List<EventSource> eventSources = new ArrayList<>();
     private String sseUrl;
-    private Map<String, String> headers = Collections.emptyMap();
-    private EventListener listener;
 
     public FintSse(String sseUrl) {
         this.sseUrl = sseUrl;
     }
 
-    public void connect(EventListener listener, Map<String, String> headers) {
-        this.headers = headers;
+    public FintSse(String sseUrl, long sseThreadInterval) {
+        this.sseUrl = sseUrl;
+        this.sseThreadInterval = sseThreadInterval;
+    }
+
+    public void connect(EventListener listener, Map<String, String> headers, String... names) {
+        fintSseClient = new FintSseClient(listener, headers, names);
         connect(listener);
     }
 
-    public void connect(EventListener listener) {
-        this.listener = listener;
-        eventSource = EventSource.target(getWebTarget()).build();
-        eventSource.register(listener);
+    public void connect(EventListener listener, String... names) {
+        fintSseClient = new FintSseClient(listener, names);
+        createEventSource();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.submit(() -> {
+            try {
+                Thread.sleep(sseThreadInterval);
+                createEventSource();
+            } catch (InterruptedException ignored) {
+            }
+        });
+    }
+
+    private synchronized void createEventSource() {
+        String[] names = fintSseClient.getNames();
+        EventSource eventSource = EventSource.target(getWebTarget()).build();
+        if (names.length == 0) {
+            eventSource.register(fintSseClient.getListener());
+        } else {
+            String first = names[0];
+            String[] rest = Arrays.copyOfRange(names, 1, names.length);
+            eventSource.register(fintSseClient.getListener(), first, rest);
+        }
+
         eventSource.open();
+        eventSources.add(eventSource);
     }
 
     public void close() {
-        if (eventSource != null) {
-            eventSource.close();
-        }
+        eventSources.forEach(EventSource::close);
     }
 
     public boolean verifyConnection() {
-        if (eventSource == null) {
+        if (eventSources.size() == 0) {
             return false;
         }
 
-        if (eventSource.isOpen()) {
-            return true;
-        } else {
-            eventSource.close();
-            connect(listener);
-            return false;
+        for (int i = 0; i < eventSources.size(); i++) {
+            EventSource eventSource = eventSources.get(i);
+            if (!eventSource.isOpen()) {
+                eventSources.remove(i);
+                eventSource.close();
+                createEventSource();
+                return false;
+            }
         }
+
+        return true;
     }
 
     public boolean isConnected() {
-        return eventSource != null && eventSource.isOpen();
+        return eventSources.size() > 0 && eventSources.stream().allMatch(EventSource::isOpen);
     }
 
     private WebTarget getWebTarget() {
-        SseHeaderProvider provider = () -> headers;
+        SseHeaderProvider provider = () -> fintSseClient.getHeaders();
         Client client = ClientBuilder.newBuilder()
                 .register(SseFeature.class)
                 .register(new SseHeaderSupportFeature(provider))
