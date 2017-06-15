@@ -21,12 +21,12 @@ compile('no.fint:fint-sse:0.0.1')
 
 Create new instance
 ```java
-FintSse fintSse = new FintSse("http://localhost:8080/sse/123");
+new FintSse("http://localhost:8080/sse/123");
 ```
 
 It is possible to specifcy the SSE thread interval in milliseconds, this is 10 minutes by default
 ```java
-FintSse fintSse = new FintSse("http://localhost:8080/sse/123", TimeUnit.MILLISECONDS.convert(20, TimeUnit.MINUTES));
+new FintSse("http://localhost:8080/sse/123", TimeUnit.MILLISECONDS.convert(20, TimeUnit.MINUTES));
 ```
 
 Create an event listener
