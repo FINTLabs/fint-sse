@@ -1,6 +1,7 @@
 package no.fint.sse;
 
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
@@ -8,14 +9,12 @@ import org.glassfish.jersey.media.sse.SseFeature;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class FintSse {
     private long sseThreadInterval = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
     private boolean concurrentConnections = true;
@@ -25,14 +24,24 @@ public class FintSse {
     private List<EventSource> eventSources = new ArrayList<>();
     private String sseUrl;
 
-
     public FintSse(String sseUrl) {
         this.sseUrl = sseUrl;
+        verifySseUrl();
     }
 
     public FintSse(String sseUrl, long sseThreadInterval) {
         this.sseUrl = sseUrl;
+        verifySseUrl();
         this.sseThreadInterval = sseThreadInterval;
+    }
+
+    private void verifySseUrl() {
+        if (sseUrl == null || sseUrl.equals("")) {
+            throw new IllegalArgumentException("SSE url cannot be null or empty");
+        } else if (!sseUrl.endsWith("%s")) {
+            log.info("No placeholder found in SSE url, disabling concurrent connections");
+            this.concurrentConnections = false;
+        }
     }
 
     public void disableConcurrentConnections() {
@@ -41,13 +50,16 @@ public class FintSse {
 
     public void connect(EventListener listener, Map<String, String> headers, String... names) {
         fintSseClient = new FintSseClient(listener, headers, names);
-        connect(listener);
+        connect();
     }
 
     public void connect(EventListener listener, String... names) {
         fintSseClient = new FintSseClient(listener, names);
-        createEventSource();
+        connect();
+    }
 
+    private void connect() {
+        createEventSource();
         if (concurrentConnections) {
             ExecutorService executorService = Executors.newFixedThreadPool(1);
             executorService.submit(() -> {
@@ -111,7 +123,17 @@ public class FintSse {
                 .register(new SseHeaderSupportFeature(provider))
                 .build();
 
-        return client.target(sseUrl);
+        return client.target(createConnectSseUrl());
     }
 
+    private String createConnectSseUrl() {
+        if (sseUrl.endsWith("%s")) {
+            String connectionId = UUID.randomUUID().toString();
+            String connectionUrl = String.format(sseUrl, connectionId);
+            log.info("Placeholder found in sseUrl, generated connection id: {}", connectionId);
+            return connectionUrl;
+        } else {
+            return sseUrl;
+        }
+    }
 }

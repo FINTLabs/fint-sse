@@ -19,14 +19,15 @@ compile('no.fint:fint-sse:0.0.2')
 
 ## Usage
 
-Create new instance
+Create new instance. If the SseUrl contains a placeholder at the end a UUID is generated and added before registering the client.
+By default concurrent connections is also enabled, where 2 sse connections are registered on connect. This can be disabled by `disableConcurrentConnections()`.
 ```java
-new FintSse("http://localhost:8080/sse/123");
+new FintSse("http://localhost:8080/sse/%s");
 ```
 
 It is possible to specifcy the SSE thread interval in milliseconds, this is 10 minutes by default
 ```java
-new FintSse("http://localhost:8080/sse/123", TimeUnit.MILLISECONDS.convert(20, TimeUnit.MINUTES));
+new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, TimeUnit.MINUTES));
 ```
 
 Create an event listener

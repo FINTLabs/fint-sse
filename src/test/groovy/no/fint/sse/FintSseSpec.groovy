@@ -93,7 +93,7 @@ class FintSseSpec extends Specification {
 
     def "Verify connection for concurrent connections"() {
         given:
-        fintSse = new FintSse("http://localhost:${port}/sse", 5)
+        fintSse = new FintSse("http://localhost:${port}/sse/%s", 5)
 
         when:
         fintSse.connect(listener)
@@ -105,5 +105,13 @@ class FintSseSpec extends Specification {
         then:
         connected
         connectionVerified
+    }
+
+    def "Throw IllegalArgumentException when sseUrl is null"() {
+        when:
+        new FintSse(null)
+
+        then:
+        thrown(IllegalArgumentException)
     }
 }
