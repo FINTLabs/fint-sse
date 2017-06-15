@@ -91,6 +91,15 @@ class FintSseSpec extends Specification {
         noExceptionThrown()
     }
 
+    def "Shutdown connection"() {
+        when:
+        fintSse.connect(listener)
+        fintSse.shutdown()
+
+        then:
+        noExceptionThrown()
+    }
+
     def "Verify connection for concurrent connections"() {
         given:
         fintSse = new FintSse("http://localhost:${port}/sse/%s", 5)

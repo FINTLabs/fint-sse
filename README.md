@@ -67,8 +67,15 @@ boolean connected = fintSse.verifyConnection();
 ```
 
 ### Close connection
+
 ```java
 fintSse.close();
+```
+
+It is recommended to use `shutdown()` when stopping the container.
+The difference is that `shutdown()` will not try to reconnect when the container is stopping if there are no active connections, while `close()` will (with the `verifyConnection()`).
+```java
+fintSse.shutdown();
 ```
 
 By default the client will run two simultaneous SSE connections, this can be disabled
