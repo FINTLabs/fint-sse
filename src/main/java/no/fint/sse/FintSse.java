@@ -1,5 +1,6 @@
 package no.fint.sse;
 
+import lombok.Synchronized;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
@@ -50,7 +51,8 @@ public class FintSse {
         });
     }
 
-    private synchronized void createEventSource() {
+    @Synchronized
+    private void createEventSource() {
         String[] names = fintSseClient.getNames();
         EventSource eventSource = EventSource.target(getWebTarget()).build();
         if (names.length == 0) {

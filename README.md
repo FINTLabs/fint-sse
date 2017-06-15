@@ -20,9 +20,9 @@ FintSse fintSse = new FintSse("http://localhost:8080/sse/123");
 
 Create an event listener
 ```java
-public class MyEventListener implements EventListener {
+public class MyEventListener extends AbstractEventListener {
     @Override
-    public void onEvent(InboundEvent inboundEvent) {
+    public void onEvent(Event event) {
         ...
     }
 }
@@ -31,6 +31,11 @@ public class MyEventListener implements EventListener {
 Connect to the SSE server
 ```java
 fintSse.connect(myEventListener);
+```
+
+Or connect event listener to a specific action
+```java
+fintSse.connect(myEventListener, "GET_ALL_EMPLOYEES");
 ```
 
 It is also possible to send in headers that will be sent with the SSE request
