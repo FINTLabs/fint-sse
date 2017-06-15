@@ -19,7 +19,7 @@ compile('no.fint:fint-sse:0.0.2')
 
 ## Usage
 
-Create new instance.
+### Create new instance.
 ```java
 new FintSse("http://localhost:8080/sse/%s");
 ```
@@ -32,7 +32,7 @@ It is possible to specifcy the SSE thread interval in milliseconds, this is 10 m
 new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, TimeUnit.MINUTES));
 ```
 
-Create an event listener
+### Create an event listener
 ```java
 public class MyEventListener extends AbstractEventListener {
     @Override
@@ -42,7 +42,7 @@ public class MyEventListener extends AbstractEventListener {
 }
 ```
 
-Connect to the SSE server
+### Connect to the SSE server
 ```java
 fintSse.connect(myEventListener);
 ```
@@ -58,13 +58,15 @@ Map<String, String> headeres = ImmutableMap.of("x-org-id", "mock.no");
 fintSse.connect(listener, headers);
 ```
 
-Verify connection, this will return true if the connection is open.  
+### Verify connection
+
+Returns true if the connection is open.  
 If it is closed `FintSse` will try to reconnect and return false.
 ```java
 boolean connected = fintSse.verifyConnection();
 ```
 
-Close connection
+### Close connection
 ```java
 fintSse.close();
 ```
