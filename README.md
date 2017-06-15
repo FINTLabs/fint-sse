@@ -8,6 +8,12 @@ Built on [jersey](https://jersey.github.io/documentation/latest/sse.html).
 ## Installation
 
 ```groovy
+repositories {
+    maven {
+        url  "http://dl.bintray.com/fint/maven" 
+    }
+}
+
 compile('no.fint:fint-sse:0.0.1')
 ```
 
@@ -53,4 +59,9 @@ boolean connected = fintSse.verifyConnection();
 Close connection
 ```java
 fintSse.close();
+```
+
+By default the client will run two simultaneous SSE connections, this can be disabled
+```java
+fintSse.disableConcurrentConnections();
 ```

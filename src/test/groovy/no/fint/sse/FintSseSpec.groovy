@@ -17,6 +17,7 @@ class FintSseSpec extends Specification {
     void setup() {
         listener = new TestEventListener()
         fintSse = new FintSse("http://localhost:${port}/sse")
+        fintSse.disableConcurrentConnections()
     }
 
     def "Connect event listener"() {
@@ -88,5 +89,21 @@ class FintSseSpec extends Specification {
 
         then:
         noExceptionThrown()
+    }
+
+    def "Verify connection for concurrent connections"() {
+        given:
+        fintSse = new FintSse("http://localhost:${port}/sse", 5)
+
+        when:
+        fintSse.connect(listener)
+        Thread.sleep(10)
+        def connected = fintSse.isConnected()
+        def connectionVerified = fintSse.verifyConnection()
+        fintSse.close()
+
+        then:
+        connected
+        connectionVerified
     }
 }

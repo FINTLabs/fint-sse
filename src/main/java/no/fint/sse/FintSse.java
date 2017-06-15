@@ -18,10 +18,13 @@ import java.util.concurrent.TimeUnit;
 
 public class FintSse {
     private long sseThreadInterval = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
+    private boolean concurrentConnections = true;
+
     private FintSseClient fintSseClient;
 
     private List<EventSource> eventSources = new ArrayList<>();
     private String sseUrl;
+
 
     public FintSse(String sseUrl) {
         this.sseUrl = sseUrl;
@@ -30,6 +33,10 @@ public class FintSse {
     public FintSse(String sseUrl, long sseThreadInterval) {
         this.sseUrl = sseUrl;
         this.sseThreadInterval = sseThreadInterval;
+    }
+
+    public void disableConcurrentConnections() {
+        this.concurrentConnections = false;
     }
 
     public void connect(EventListener listener, Map<String, String> headers, String... names) {
@@ -41,14 +48,16 @@ public class FintSse {
         fintSseClient = new FintSseClient(listener, names);
         createEventSource();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.submit(() -> {
-            try {
-                Thread.sleep(sseThreadInterval);
-                createEventSource();
-            } catch (InterruptedException ignored) {
-            }
-        });
+        if (concurrentConnections) {
+            ExecutorService executorService = Executors.newFixedThreadPool(1);
+            executorService.submit(() -> {
+                try {
+                    Thread.sleep(sseThreadInterval);
+                    createEventSource();
+                } catch (InterruptedException ignored) {
+                }
+            });
+        }
     }
 
     @Synchronized
@@ -68,7 +77,9 @@ public class FintSse {
     }
 
     public void close() {
-        eventSources.forEach(EventSource::close);
+        for (int i = 0; i < eventSources.size(); i++) {
+            eventSources.get(i).close();
+        }
     }
 
     public boolean verifyConnection() {
