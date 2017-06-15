@@ -41,7 +41,7 @@ class FintSseSpec extends Specification {
         def connected = fintSse.verifyConnection()
 
         then:
-        !connected
+        connected
     }
 
     def "Verify connection after connect"() {
@@ -86,15 +86,6 @@ class FintSseSpec extends Specification {
         when:
         fintSse.connect(listener)
         fintSse.close()
-
-        then:
-        noExceptionThrown()
-    }
-
-    def "Shutdown connection"() {
-        when:
-        fintSse.connect(listener)
-        fintSse.shutdown()
 
         then:
         noExceptionThrown()

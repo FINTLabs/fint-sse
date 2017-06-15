@@ -13,6 +13,8 @@ import java.util.List;
 
 public abstract class AbstractEventListener implements EventListener {
 
+    static final int MAX_UUIDS = 50;
+
     @Getter(AccessLevel.PACKAGE)
     private List<String> uuids = new ArrayList<>();
 
@@ -31,7 +33,7 @@ public abstract class AbstractEventListener implements EventListener {
         if (contains) {
             return false;
         } else {
-            if (uuids.size() >= 10) {
+            if (uuids.size() >= MAX_UUIDS) {
                 uuids.remove(0);
             }
 

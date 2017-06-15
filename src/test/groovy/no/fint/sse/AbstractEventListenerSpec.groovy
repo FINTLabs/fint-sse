@@ -35,7 +35,7 @@ class AbstractEventListenerSpec extends Specification {
 
     def "Remove old corrIds"() {
         when:
-        1.upto(15) {
+        1.upto(AbstractEventListener.MAX_UUIDS + 5) {
             def event = new Event('rogfk.no', 'test', DefaultActions.HEALTH.name(), 'test')
             def inboundEvent = Mock(InboundEvent) {
                 readData() >> new ObjectMapper().writeValueAsString(event)
@@ -45,6 +45,6 @@ class AbstractEventListenerSpec extends Specification {
         }
 
         then:
-        listener.uuids.size() == 10
+        listener.uuids.size() == AbstractEventListener.MAX_UUIDS
     }
 }

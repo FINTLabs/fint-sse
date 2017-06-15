@@ -24,8 +24,6 @@ public class FintSse {
     private List<EventSource> eventSources = new ArrayList<>();
     private String sseUrl;
 
-    private boolean containerIsActive = true;
-
     public FintSse(String sseUrl) {
         this.sseUrl = sseUrl;
         verifySseUrl();
@@ -90,11 +88,6 @@ public class FintSse {
         eventSources.add(eventSource);
     }
 
-    public void shutdown() {
-        containerIsActive = false;
-        close();
-    }
-
     public void close() {
         for (int i = 0; i < eventSources.size(); i++) {
             eventSources.get(i).close();
@@ -102,10 +95,6 @@ public class FintSse {
     }
 
     public boolean verifyConnection() {
-        if (containerIsActive && eventSources.size() == 0) {
-            return false;
-        }
-
         for (int i = 0; i < eventSources.size(); i++) {
             EventSource eventSource = eventSources.get(i);
             if (!eventSource.isOpen()) {
