@@ -76,3 +76,8 @@ By default the client will run two simultaneous SSE connections, this can be dis
 ```java
 fintSse.disableConcurrentConnections();
 ```
+
+### Basic authentication
+
+Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).
+To disable add this property: `security.basic.enabled=false`

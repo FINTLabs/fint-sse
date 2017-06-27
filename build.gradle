@@ -17,6 +17,7 @@ jar {
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     jcenter()
     maven {
         url  "http://dl.bintray.com/fint/maven"
@@ -28,6 +29,7 @@ apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.1
 dependencies {
     compile('org.glassfish.jersey.media:jersey-media-sse:2.25.1')
     compile('no.fint:fint-event-model:0.0.26')
+    compile('no.fint:fint-oauth-token-service:0.0.2')
     compileOnly('org.slf4j:slf4j-api:1.7.25')
 
     testCompile('cglib:cglib-nodep:3.2.5')

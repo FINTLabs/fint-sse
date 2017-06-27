@@ -1,5 +1,7 @@
 package no.fint.sse;
 
+import lombok.AccessLevel;
+import lombok.Setter;
 import org.glassfish.jersey.media.sse.EventListener;
 
 import java.util.Collections;
@@ -8,6 +10,7 @@ import java.util.Map;
 class FintSseClient {
     private EventListener listener;
     private String[] names;
+    @Setter(AccessLevel.PACKAGE)
     private Map<String, String> headers;
 
     public FintSseClient(EventListener listener, String[] names) {
