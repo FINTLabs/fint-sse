@@ -3,8 +3,10 @@ package no.fint.sse.testutils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -14,14 +16,20 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class TestSseServer {
 
     @GetMapping("/sse")
-    private SseEmitter subscribe() {
+    public SseEmitter subscribe() {
         log.info("SSE client connected");
         return new SseEmitter();
     }
 
     @GetMapping("/sse/{id}")
-    private SseEmitter subscribe(@PathVariable String id) {
-        log.info("SSE client connected, id: {}", id);
+    public SseEmitter subscribe(@PathVariable String id) {
+        log.info("SSE client connected, id:{}", id);
+        return new SseEmitter();
+    }
+
+    @GetMapping("/oauth/sse/{id}")
+    public SseEmitter subscribe(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String id) {
+        log.info("SSE client connected, auth-header:{} id:{}", auth, id);
         return new SseEmitter();
     }
 

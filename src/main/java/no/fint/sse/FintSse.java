@@ -2,9 +2,11 @@ package no.fint.sse;
 
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import no.fint.oauth.TokenService;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
+import org.springframework.http.HttpHeaders;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -23,10 +25,24 @@ public class FintSse {
 
     private List<EventSource> eventSources = new ArrayList<>();
     private String sseUrl;
+    private TokenService tokenService;
 
     public FintSse(String sseUrl) {
         this.sseUrl = sseUrl;
         verifySseUrl();
+    }
+
+    public FintSse(String sseUrl, TokenService tokenService) {
+        this.sseUrl = sseUrl;
+        verifySseUrl();
+        this.tokenService = tokenService;
+    }
+
+    public FintSse(String sseUrl, TokenService tokenService, long sseThreadInterval) {
+        this.sseUrl = sseUrl;
+        verifySseUrl();
+        this.sseThreadInterval = sseThreadInterval;
+        this.tokenService = tokenService;
     }
 
     public FintSse(String sseUrl, long sseThreadInterval) {
@@ -113,7 +129,14 @@ public class FintSse {
     }
 
     private WebTarget getWebTarget() {
-        SseHeaderProvider provider = () -> fintSseClient.getHeaders();
+        Map<String, String> headers = fintSseClient.getHeaders();
+        if (tokenService != null) {
+            log.debug("Adding bearer token as header");
+            String bearerToken = String.format("Bearer %s", tokenService.getAccessToken());
+            headers.put(HttpHeaders.AUTHORIZATION, bearerToken);
+        }
+
+        SseHeaderProvider provider = () -> headers;
         Client client = ClientBuilder.newBuilder()
                 .register(SseFeature.class)
                 .register(new SseHeaderSupportFeature(provider))

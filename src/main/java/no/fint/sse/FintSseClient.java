@@ -2,7 +2,7 @@ package no.fint.sse;
 
 import org.glassfish.jersey.media.sse.EventListener;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 class FintSseClient {
@@ -12,7 +12,7 @@ class FintSseClient {
 
     public FintSseClient(EventListener listener, String[] names) {
         this.listener = listener;
-        this.headers = Collections.emptyMap();
+        this.headers = new HashMap<>();
         this.names = names;
     }
 
