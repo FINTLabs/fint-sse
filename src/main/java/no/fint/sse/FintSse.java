@@ -18,7 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class FintSse {
-    private long sseThreadInterval = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
+    private static final long DEFAULT_SSE_THREAD_INTERVAL = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
+
+    private long sseThreadInterval;
     private boolean concurrentConnections = true;
 
     private FintSseClient fintSseClient;
@@ -28,26 +30,21 @@ public class FintSse {
     private TokenService tokenService;
 
     public FintSse(String sseUrl) {
-        this.sseUrl = sseUrl;
-        verifySseUrl();
+        this(sseUrl, null, DEFAULT_SSE_THREAD_INTERVAL);
     }
 
     public FintSse(String sseUrl, TokenService tokenService) {
-        this.sseUrl = sseUrl;
-        verifySseUrl();
-        this.tokenService = tokenService;
+        this(sseUrl, tokenService, DEFAULT_SSE_THREAD_INTERVAL);
+    }
+
+    public FintSse(String sseUrl, long sseThreadInterval) {
+        this(sseUrl, null, sseThreadInterval);
     }
 
     public FintSse(String sseUrl, TokenService tokenService, long sseThreadInterval) {
         this.sseUrl = sseUrl;
         verifySseUrl();
-        this.sseThreadInterval = sseThreadInterval;
         this.tokenService = tokenService;
-    }
-
-    public FintSse(String sseUrl, long sseThreadInterval) {
-        this.sseUrl = sseUrl;
-        verifySseUrl();
         this.sseThreadInterval = sseThreadInterval;
     }
 
