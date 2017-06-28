@@ -128,7 +128,7 @@ public class FintSse {
     private WebTarget getWebTarget() {
         Map<String, String> headers = fintSseClient.getHeaders();
         if (tokenService != null) {
-            log.debug("Adding bearer token as header");
+            log.debug("Adding bearer token in Authorization header");
             String bearerToken = String.format("Bearer %s", tokenService.getAccessToken());
             headers.put(HttpHeaders.AUTHORIZATION, bearerToken);
         }
