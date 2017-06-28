@@ -87,7 +87,7 @@ new FintSse("http://localhost:8080/sse/%s", tokenService);
 This will automatically add a bearer token to the authorization header.  
 
 **Basic authentication**  
-Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).
+Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).  
 To disable add this property: `security.basic.enabled=false`
 
 **[OAuth config](https://github.com/FINTlibs/fint-oauth-token-service#configuration)**
