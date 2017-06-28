@@ -77,7 +77,14 @@ By default the client will run two simultaneous SSE connections, this can be dis
 fintSse.disableConcurrentConnections();
 ```
 
-## Configuration
+## OAuth
+
+Enable support for OAuth by sending in `TokenService` when creating a new instance:
+```java
+new FintSse("http://localhost:8080/sse/%s", tokenService);
+```
+
+This will automatically add a bearer token to the authorization header.  
 
 **Basic authentication**  
 Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).
