@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class FintSse {
@@ -66,9 +67,27 @@ public class FintSse {
         connect();
     }
 
+    public void connect(EventListener listener, Map<String, String> headers, Enum name, Enum... names) {
+        fintSseClient = new FintSseClient(listener, headers, getEnumNames(name, names));
+        connect();
+    }
+
     public void connect(EventListener listener, String... names) {
         fintSseClient = new FintSseClient(listener, names);
         connect();
+    }
+
+    public void connect(EventListener listener, Enum name, Enum... names) {
+        fintSseClient = new FintSseClient(listener, getEnumNames(name, names));
+        connect();
+    }
+
+    private String[] getEnumNames(Enum name, Enum... names) {
+        List<String> stringNames = new ArrayList<>();
+        stringNames.add(name.name());
+        List<String> tempNames = Arrays.stream(names).map(Enum::name).collect(Collectors.toList());
+        stringNames.addAll(tempNames);
+        return stringNames.toArray(new String[0]);
     }
 
     private void connect() {

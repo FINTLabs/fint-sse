@@ -1,5 +1,6 @@
 package no.fint.sse
 
+import no.fint.event.model.DefaultActions
 import no.fint.oauth.TokenService
 import no.fint.sse.testutils.TestEventListener
 import no.fint.sse.testutils.TestSseServer
@@ -32,6 +33,30 @@ class FintSseSpec extends Specification {
     def "Connect event listener with event name"() {
         when:
         fintSse.connect(listener, 'test1', 'test2')
+
+        then:
+        fintSse.isConnected()
+    }
+
+    def "Connect event listener with header and event name"() {
+        when:
+        fintSse.connect(listener, ['x-org-id': 'mock.no'], 'test1', 'test2')
+
+        then:
+        fintSse.isConnected()
+    }
+
+    def "Connect event listener with header and event enum"() {
+        when:
+        fintSse.connect(listener, ['x-org-id': 'mock.no'], DefaultActions.HEALTH)
+
+        then:
+        fintSse.isConnected()
+    }
+
+    def "Connect event listener with multiple event enums"() {
+        when:
+        fintSse.connect(listener, DefaultActions.HEALTH, DefaultActions.REGISTER_ORG_ID)
 
         then:
         fintSse.isConnected()
