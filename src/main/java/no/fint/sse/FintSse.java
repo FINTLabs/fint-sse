@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -29,6 +30,8 @@ public class FintSse {
     private List<EventSource> eventSources = new ArrayList<>();
     private String sseUrl;
     private TokenService tokenService;
+
+    private AtomicBoolean logConnectionId = new AtomicBoolean(true);
 
     public FintSse(String sseUrl) {
         this(sseUrl, null, DEFAULT_SSE_THREAD_INTERVAL);
@@ -118,6 +121,12 @@ public class FintSse {
 
         eventSource.open();
         eventSources.add(eventSource);
+        if (eventSource.isOpen()) {
+            logConnectionId.set(true);
+        } else {
+            log.warn("Unable to connect to {}", sseUrl);
+            logConnectionId.set(false);
+        }
     }
 
     public void close() {
@@ -165,7 +174,9 @@ public class FintSse {
         if (sseUrl.endsWith("%s")) {
             String connectionId = UUID.randomUUID().toString();
             String connectionUrl = String.format(sseUrl, connectionId);
-            log.info("Placeholder found in sseUrl, generated connection id: {}", connectionId);
+            if (logConnectionId.get()) {
+                log.info("Placeholder found in sseUrl, generated connection id: {}", connectionId);
+            }
             return connectionUrl;
         } else {
             return sseUrl;
