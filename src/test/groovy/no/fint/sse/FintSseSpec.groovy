@@ -1,5 +1,6 @@
 package no.fint.sse
 
+import no.fint.event.model.Event
 import no.fint.oauth.TokenService
 import no.fint.sse.testutils.TestAbstractEventListener
 import no.fint.sse.testutils.TestSseServer
@@ -32,6 +33,21 @@ class FintSseSpec extends Specification {
     def "Connect event listener with header"() {
         when:
         fintSse.connect(listener, ['x-org-id': 'mock.no'])
+
+        then:
+        fintSse.isConnected()
+    }
+
+    def "Connect event listener without actions configured"() {
+        given:
+        def testListener = new AbstractEventListener() {
+            @Override
+            void onEvent(Event event) {
+            }
+        }
+
+        when:
+        fintSse.connect(testListener)
 
         then:
         fintSse.isConnected()
