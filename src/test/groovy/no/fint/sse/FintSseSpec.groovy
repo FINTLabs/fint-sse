@@ -1,8 +1,7 @@
 package no.fint.sse
 
-import no.fint.event.model.DefaultActions
 import no.fint.oauth.TokenService
-import no.fint.sse.testutils.TestEventListener
+import no.fint.sse.testutils.TestAbstractEventListener
 import no.fint.sse.testutils.TestSseServer
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
@@ -14,10 +13,10 @@ class FintSseSpec extends Specification {
     private int port
 
     private FintSse fintSse
-    private TestEventListener listener
+    private TestAbstractEventListener listener
 
     void setup() {
-        listener = new TestEventListener()
+        listener = new TestAbstractEventListener()
         fintSse = new FintSse("http://localhost:${port}/sse")
         fintSse.disableConcurrentConnections()
     }
@@ -30,33 +29,9 @@ class FintSseSpec extends Specification {
         fintSse.isConnected()
     }
 
-    def "Connect event listener with event name"() {
+    def "Connect event listener with header"() {
         when:
-        fintSse.connect(listener, 'test1', 'test2')
-
-        then:
-        fintSse.isConnected()
-    }
-
-    def "Connect event listener with header and event name"() {
-        when:
-        fintSse.connect(listener, ['x-org-id': 'mock.no'], 'test1', 'test2')
-
-        then:
-        fintSse.isConnected()
-    }
-
-    def "Connect event listener with header and event enum"() {
-        when:
-        fintSse.connect(listener, ['x-org-id': 'mock.no'], DefaultActions.HEALTH)
-
-        then:
-        fintSse.isConnected()
-    }
-
-    def "Connect event listener with multiple event enums"() {
-        when:
-        fintSse.connect(listener, DefaultActions.HEALTH, DefaultActions.REGISTER_ORG_ID)
+        fintSse.connect(listener, ['x-org-id': 'mock.no'])
 
         then:
         fintSse.isConnected()

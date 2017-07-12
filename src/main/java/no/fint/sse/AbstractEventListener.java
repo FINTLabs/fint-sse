@@ -9,8 +9,9 @@ import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.InboundEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractEventListener implements EventListener {
 
@@ -19,8 +20,13 @@ public abstract class AbstractEventListener implements EventListener {
     @Getter(AccessLevel.PACKAGE)
     private List<String> uuids = new ArrayList<>();
 
-    public List<String> getNames() {
-        return Collections.emptyList();
+    public List<String> getActions() {
+        Enum[] enums = getEnumActions();
+        return Arrays.stream(enums).map(Enum::name).collect(Collectors.toList());
+    }
+
+    public Enum[] getEnumActions() {
+        return new Enum[]{};
     }
 
     @Override

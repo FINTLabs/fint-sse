@@ -3,7 +3,6 @@ package no.fint.sse;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.oauth.TokenService;
-import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
 import org.springframework.http.HttpHeaders;
@@ -11,12 +10,14 @@ import org.springframework.http.HttpHeaders;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class FintSse {
@@ -65,32 +66,14 @@ public class FintSse {
         this.concurrentConnections = false;
     }
 
-    public void connect(EventListener listener, Map<String, String> headers, String... names) {
-        fintSseClient = new FintSseClient(listener, headers, names);
+    public void connect(AbstractEventListener listener, Map<String, String> headers) {
+        fintSseClient = new FintSseClient(listener, headers);
         connect();
     }
 
-    public void connect(EventListener listener, Map<String, String> headers, Enum name, Enum... names) {
-        fintSseClient = new FintSseClient(listener, headers, getEnumNames(name, names));
+    public void connect(AbstractEventListener listener) {
+        fintSseClient = new FintSseClient(listener);
         connect();
-    }
-
-    public void connect(EventListener listener, String... names) {
-        fintSseClient = new FintSseClient(listener, names);
-        connect();
-    }
-
-    public void connect(EventListener listener, Enum name, Enum... names) {
-        fintSseClient = new FintSseClient(listener, getEnumNames(name, names));
-        connect();
-    }
-
-    private String[] getEnumNames(Enum name, Enum... names) {
-        List<String> stringNames = new ArrayList<>();
-        stringNames.add(name.name());
-        List<String> tempNames = Arrays.stream(names).map(Enum::name).collect(Collectors.toList());
-        stringNames.addAll(tempNames);
-        return stringNames.toArray(new String[0]);
     }
 
     private void connect() {
@@ -109,16 +92,18 @@ public class FintSse {
 
     @Synchronized
     private void createEventSource() {
-        String[] names = fintSseClient.getNames();
-        EventListener listener = fintSseClient.getListener();
+        AbstractEventListener listener = fintSseClient.getListener();
+        List<String> actions = listener.getActions();
         EventSource eventSource = EventSource.target(getWebTarget()).build();
-        if (names.length == 0) {
+        if (actions.size() == 0) {
             log.info("Registering listener {}", listener.getClass().getSimpleName());
             eventSource.register(listener);
         } else {
-            log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), String.join(", ", names));
-            String first = names[0];
-            String[] rest = Arrays.copyOfRange(names, 1, names.length);
+            log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), actions);
+            String first = actions.get(0);
+            List<String> restList = actions.subList(1, actions.size());
+            String[] rest = new String[restList.size()];
+            restList.toArray(rest);
             eventSource.register(listener, first, rest);
         }
 

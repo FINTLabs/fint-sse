@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.event.model.DefaultActions
 import no.fint.event.model.Event
 import no.fint.sse.testutils.TestAbstractEventListener
+import no.fint.sse.testutils.TestActions
 import org.glassfish.jersey.media.sse.InboundEvent
 import spock.lang.Specification
 
@@ -48,7 +49,17 @@ class AbstractEventListenerSpec extends Specification {
         listener.uuids.size() == AbstractEventListener.MAX_UUIDS
     }
 
-    def "Returns empty collection for event listener default names"() {
+    def "Return configured collection for event listener actions"() {
+        when:
+        def actions = listener.getActions()
+
+        then:
+        actions.size() == 2
+        actions.contains(TestActions.HEALTH.name())
+        actions.contains(TestActions.MY_TEST_ACTION.name())
+    }
+
+    def "Returns empty collection for event listener default actions"() {
         given:
         def testListener = new AbstractEventListener() {
             @Override
@@ -57,7 +68,7 @@ class AbstractEventListenerSpec extends Specification {
         }
 
         when:
-        def names = testListener.getNames()
+        def names = testListener.getActions()
 
         then:
         names.isEmpty()
