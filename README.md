@@ -83,9 +83,14 @@ fintSse.disableConcurrentConnections();
 
 Enable support for OAuth by sending in `TokenService` when creating a new instance:
 ```java
-new FintSse("http://localhost:8080/sse/%s", tokenService);
-```
+@Autowired(required = false)
+private TokenService tokenService;
 
+@PostConstruct
+public void init() {
+    FintSse fintSse = new FintSse("http://localhost:8080/sse/%s", tokenService);
+}
+```
 This will automatically add a bearer token to the authorization header.  
 
 **Basic authentication**  
