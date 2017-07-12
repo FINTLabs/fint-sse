@@ -48,12 +48,18 @@ class AbstractEventListenerSpec extends Specification {
         listener.uuids.size() == AbstractEventListener.MAX_UUIDS
     }
 
-    def "Returns collection for event listener default names"() {
+    def "Returns empty collection for event listener default names"() {
+        given:
+        def testListener = new AbstractEventListener() {
+            @Override
+            void onEvent(Event event) {
+            }
+        }
+
         when:
-        def names = listener.getNames()
+        def names = testListener.getNames()
 
         then:
-        names.size() == 1
-        names[0] == 'HEALTH'
+        names.isEmpty()
     }
 }
