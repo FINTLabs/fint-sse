@@ -36,10 +36,10 @@ new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, Ti
 ```java
 public class MyEventListener extends AbstractEventListener {
     
-    // Optional, return an array with enum actions supported by this listener
-    @Override
-    public Enum[] getEnumActions() {
-        return MyActions.values();
+    // Optional, enum action supported by this listener
+    // The constructor can also be empty, where no specific action is configured
+    public MyEventListener() {
+        super(TestActions.MY_TEST_ACTION);
     }
     
     @Override

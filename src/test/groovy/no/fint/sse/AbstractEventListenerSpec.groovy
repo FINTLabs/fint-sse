@@ -3,8 +3,10 @@ package no.fint.sse
 import com.fasterxml.jackson.databind.ObjectMapper
 import no.fint.event.model.DefaultActions
 import no.fint.event.model.Event
-import no.fint.sse.testutils.TestAbstractEventListener
+import no.fint.sse.testutils.listeners.TestAbstractEventListener
 import no.fint.sse.testutils.TestActions
+import no.fint.sse.testutils.listeners.TestEnumArrayAbstractEventListener
+import no.fint.sse.testutils.listeners.TestStringListAbstractEventListener
 import org.glassfish.jersey.media.sse.InboundEvent
 import spock.lang.Specification
 
@@ -49,14 +51,39 @@ class AbstractEventListenerSpec extends Specification {
         listener.uuids.size() == AbstractEventListener.MAX_UUIDS
     }
 
-    def "Return configured collection for event listener actions"() {
+    def "Return configured enum for event listener actions"() {
         when:
         def actions = listener.getActions()
 
         then:
-        actions.size() == 2
-        actions.contains(TestActions.HEALTH.name())
+        actions.size() == 1
         actions.contains(TestActions.MY_TEST_ACTION.name())
+    }
+
+    def "Returns configured enum array for event listener actions"() {
+        given:
+        def testListener = new TestEnumArrayAbstractEventListener()
+
+        when:
+        def actions = testListener.getActions()
+
+        then:
+        actions.size() == 2
+        actions.contains(TestActions.MY_TEST_ACTION.name())
+        actions.contains(TestActions.HEALTH.name())
+    }
+
+    def "Returns configured string list for event listener actions"() {
+        given:
+        def testListener = new TestStringListAbstractEventListener()
+
+        when:
+        def actions = testListener.getActions()
+
+        then:
+        actions.size() == 2
+        actions.contains(TestActions.MY_TEST_ACTION.name())
+        actions.contains(TestActions.HEALTH.name())
     }
 
     def "Returns empty collection for event listener default actions"() {
