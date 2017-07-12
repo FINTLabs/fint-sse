@@ -47,4 +47,13 @@ class AbstractEventListenerSpec extends Specification {
         then:
         listener.uuids.size() == AbstractEventListener.MAX_UUIDS
     }
+
+    def "Returns collection for event listener default names"() {
+        when:
+        def names = listener.getNames()
+
+        then:
+        names.size() == 1
+        names[0] == 'HEALTH'
+    }
 }
