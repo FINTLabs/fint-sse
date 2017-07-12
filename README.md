@@ -14,7 +14,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-sse:0.0.10')
+compile('no.fint:fint-sse:0.0.11')
 ```
 
 ## Usage
@@ -56,7 +56,7 @@ fintSse.connect(myEventListener);
 
 It is also possible to send in headers that will be sent with the SSE request
 ```java
-Map<String, String> headeres = ImmutableMap.of("x-org-id", "mock.no");
+Map<String, String> headers = ImmutableMap.of("x-org-id", "mock.no");
 fintSse.connect(listener, headers);
 ```
 
