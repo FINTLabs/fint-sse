@@ -9,6 +9,7 @@ import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.InboundEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractEventListener implements EventListener {
@@ -17,6 +18,10 @@ public abstract class AbstractEventListener implements EventListener {
 
     @Getter(AccessLevel.PACKAGE)
     private List<String> uuids = new ArrayList<>();
+
+    public List<String> getNames() {
+        return Collections.emptyList();
+    }
 
     @Override
     public void onEvent(InboundEvent inboundEvent) {

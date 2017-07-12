@@ -110,13 +110,16 @@ public class FintSse {
     @Synchronized
     private void createEventSource() {
         String[] names = fintSseClient.getNames();
+        EventListener listener = fintSseClient.getListener();
         EventSource eventSource = EventSource.target(getWebTarget()).build();
         if (names.length == 0) {
-            eventSource.register(fintSseClient.getListener());
+            log.info("Registering listener {}", listener.getClass().getSimpleName());
+            eventSource.register(listener);
         } else {
+            log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), String.join(", ", names));
             String first = names[0];
             String[] rest = Arrays.copyOfRange(names, 1, names.length);
-            eventSource.register(fintSseClient.getListener(), first, rest);
+            eventSource.register(listener, first, rest);
         }
 
         eventSource.open();
