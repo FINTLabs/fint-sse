@@ -54,11 +54,6 @@ public class MyEventListener extends AbstractEventListener {
 fintSse.connect(myEventListener);
 ```
 
-Or connect event listener to a specific action
-```java
-fintSse.connect(myEventListener, "GET_ALL_EMPLOYEES");
-```
-
 It is also possible to send in headers that will be sent with the SSE request
 ```java
 Map<String, String> headeres = ImmutableMap.of("x-org-id", "mock.no");
