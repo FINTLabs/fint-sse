@@ -10,10 +10,7 @@ import org.springframework.http.HttpHeaders;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -93,15 +90,16 @@ public class FintSse {
     @Synchronized
     private void createEventSource() {
         AbstractEventListener listener = fintSseClient.getListener();
-        List<String> actions = listener.getActions();
+        Set<String> actions = listener.getActions();
         EventSource eventSource = EventSource.target(getWebTarget()).build();
         if (actions.size() == 0) {
             log.info("Registering listener {}", listener.getClass().getSimpleName());
             eventSource.register(listener);
         } else {
             log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), actions);
-            String first = actions.get(0);
-            List<String> restList = actions.subList(1, actions.size());
+            List<String> actionList = new ArrayList<>(actions);
+            String first = actionList.get(0);
+            List<String> restList = actionList.subList(1, actions.size());
             String[] rest = new String[restList.size()];
             restList.toArray(rest);
             eventSource.register(listener, first, rest);

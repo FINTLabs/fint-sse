@@ -1,6 +1,5 @@
 package no.fint.sse;
 
-import jersey.repackaged.com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Synchronized;
@@ -9,10 +8,7 @@ import no.fint.event.model.EventUtil;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.InboundEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractEventListener implements EventListener {
@@ -23,22 +19,22 @@ public abstract class AbstractEventListener implements EventListener {
     private List<String> uuids = new ArrayList<>();
 
     @Getter
-    private List<String> actions;
+    private Set<String> actions = new HashSet<>();
 
-    public AbstractEventListener() {
-        actions = Collections.emptyList();
+    public AbstractEventListener addAction(Enum action) {
+        actions.add(action.name());
+        return this;
     }
 
-    public AbstractEventListener(Enum action) {
-        actions = Lists.newArrayList(action.name());
+    public AbstractEventListener addActions(Enum[] actions) {
+        List<String> actionList = Arrays.stream(actions).map(Enum::name).collect(Collectors.toList());
+        this.actions.addAll(actionList);
+        return this;
     }
 
-    public AbstractEventListener(Enum[] actions) {
-        this.actions = Arrays.stream(actions).map(Enum::name).collect(Collectors.toList());
-    }
-
-    public AbstractEventListener(List<String> actions) {
-        this.actions = actions;
+    public AbstractEventListener addActions(List<String> actions) {
+        this.actions.addAll(actions);
+        return this;
     }
 
     @Override

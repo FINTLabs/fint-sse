@@ -11,7 +11,7 @@ public class TestAbstractEventListener extends AbstractEventListener {
     private Event event;
 
     public TestAbstractEventListener() {
-        super(TestActions.MY_TEST_ACTION);
+        addAction(TestActions.MY_TEST_ACTION);
     }
 
     @Override
