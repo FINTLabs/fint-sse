@@ -37,9 +37,8 @@ new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, Ti
 public class MyEventListener extends AbstractEventListener {
     
     // Optional, enum action supported by this listener
-    // The constructor can also be empty, where no specific action is configured
     public MyEventListener() {
-        super(TestActions.MY_TEST_ACTION);
+        addAction(TestActions.MY_TEST_ACTION);
     }
     
     @Override
@@ -48,6 +47,8 @@ public class MyEventListener extends AbstractEventListener {
     }
 }
 ```
+
+The `addAction` method is optional to use. If you do not add any actions for the EventListener, all events will be received.
 
 ### Connect to the SSE server
 ```java
