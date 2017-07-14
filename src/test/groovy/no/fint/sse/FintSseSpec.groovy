@@ -2,7 +2,8 @@ package no.fint.sse
 
 import no.fint.event.model.Event
 import no.fint.oauth.TokenService
-import no.fint.sse.testutils.listeners.TestAbstractEventListener
+import no.fint.sse.testutils.TestAbstractEventListener
+import no.fint.sse.testutils.TestActions
 import no.fint.sse.testutils.TestSseServer
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,6 +19,8 @@ class FintSseSpec extends Specification {
 
     void setup() {
         listener = new TestAbstractEventListener()
+        listener.addActions(TestActions.values())
+
         fintSse = new FintSse("http://localhost:${port}/sse")
         fintSse.disableConcurrentConnections()
     }

@@ -3,6 +3,7 @@ package no.fint.sse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
 import no.fint.event.model.EventUtil;
 import org.glassfish.jersey.media.sse.EventListener;
@@ -11,15 +12,22 @@ import org.glassfish.jersey.media.sse.InboundEvent;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class AbstractEventListener implements EventListener {
 
     static final int MAX_UUIDS = 50;
+
+    private boolean logUnsupportedActions = true;
 
     @Getter(AccessLevel.PACKAGE)
     private List<String> uuids = new ArrayList<>();
 
     @Getter
     private Set<String> actions = new HashSet<>();
+
+    public void disableLogUnsupportedActions() {
+        this.logUnsupportedActions = false;
+    }
 
     public AbstractEventListener addAction(Enum action) {
         actions.add(action.name());
@@ -42,7 +50,11 @@ public abstract class AbstractEventListener implements EventListener {
         String json = inboundEvent.readData();
         Event event = EventUtil.toEvent(json);
         if (isNewCorrId(event.getCorrId())) {
-            onEvent(event);
+            if (actions.size() == 0 || actions.contains(event.getAction())) {
+                onEvent(event);
+            } else if (logUnsupportedActions) {
+                log.warn("Received event (corrId:{}) with an unsupported action: {}", event.getCorrId(), event.getAction());
+            }
         }
     }
 
