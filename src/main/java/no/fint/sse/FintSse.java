@@ -29,7 +29,7 @@ public class FintSse {
     private String sseUrl;
     private TokenService tokenService;
 
-    private AtomicBoolean logConnectionId = new AtomicBoolean(true);
+    private AtomicBoolean logConnectionInfo = new AtomicBoolean(true);
 
     public FintSse(String sseUrl) {
         this(sseUrl, null, DEFAULT_SSE_THREAD_INTERVAL);
@@ -93,10 +93,14 @@ public class FintSse {
         Set<String> actions = listener.getActions();
         EventSource eventSource = EventSource.target(getWebTarget()).build();
         if (actions.size() == 0) {
-            log.info("Registering listener {}", listener.getClass().getSimpleName());
+            if (logConnectionInfo.get()) {
+                log.info("Registering listener {}", listener.getClass().getSimpleName());
+            }
             eventSource.register(listener);
         } else {
-            log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), actions);
+            if (logConnectionInfo.get()) {
+                log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), actions);
+            }
             List<String> actionList = new ArrayList<>(actions);
             String first = actionList.get(0);
             List<String> restList = actionList.subList(1, actions.size());
@@ -108,10 +112,10 @@ public class FintSse {
         eventSource.open();
         eventSources.add(eventSource);
         if (eventSource.isOpen()) {
-            logConnectionId.set(true);
+            logConnectionInfo.set(true);
         } else {
             log.warn("Unable to connect to {}", sseUrl);
-            logConnectionId.set(false);
+            logConnectionInfo.set(false);
         }
     }
 
@@ -160,7 +164,7 @@ public class FintSse {
         if (sseUrl.endsWith("%s")) {
             String connectionId = UUID.randomUUID().toString();
             String connectionUrl = String.format(sseUrl, connectionId);
-            if (logConnectionId.get()) {
+            if (logConnectionInfo.get()) {
                 log.info("Placeholder found in sseUrl, generated connection id: {}", connectionId);
             }
             return connectionUrl;
