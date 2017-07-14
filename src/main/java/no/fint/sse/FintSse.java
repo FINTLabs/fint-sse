@@ -92,23 +92,15 @@ public class FintSse {
         AbstractEventListener listener = fintSseClient.getListener();
         Set<String> actions = listener.getActions();
         EventSource eventSource = EventSource.target(getWebTarget()).build();
-        if (actions.size() == 0) {
-            if (logConnectionInfo.get()) {
+        if (logConnectionInfo.get()) {
+            if (actions.size() == 0) {
                 log.info("Registering listener {}", listener.getClass().getSimpleName());
-            }
-            eventSource.register(listener);
-        } else {
-            if (logConnectionInfo.get()) {
+            } else {
                 log.info("Registering listener {} for names:{}", listener.getClass().getSimpleName(), actions);
             }
-            List<String> actionList = new ArrayList<>(actions);
-            String first = actionList.get(0);
-            List<String> restList = actionList.subList(1, actions.size());
-            String[] rest = new String[restList.size()];
-            restList.toArray(rest);
-            eventSource.register(listener, first, rest);
         }
 
+        eventSource.register(listener);
         eventSource.open();
         eventSources.add(eventSource);
         if (eventSource.isOpen()) {
