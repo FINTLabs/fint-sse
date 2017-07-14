@@ -48,7 +48,11 @@ public class MyEventListener extends AbstractEventListener {
 }
 ```
 
-The `addAction` method is optional to use. If you do not add any actions for the EventListener, all events will be received.
+The `addAction` method is optional to use. If you do not add any actions for the EventListener, all events will be received.  
+If the action of the received event is not added as a supported action in the event listener, this will be logged.
+This logging can be disabled: `eventListener.disableLogUnsupportedActions()`.
+
+If no actions are added to the event listener, all received events are supported.
 
 ### Connect to the SSE server
 ```java
