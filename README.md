@@ -36,11 +36,9 @@ new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, Ti
 ```java
 public class MyEventListener extends AbstractEventListener {
     
-    // Optional, enum action supported by this listener
-    // Optional, add supported orgIds
     public MyEventListener() {
-        addActions(TestActions.MY_TEST_ACTION);
-        addOrgIds("rogfk.no");
+        addActions(TestActions.MY_TEST_ACTION); // Optional, enum action supported by this listener
+        addOrgIds("rogfk.no"); // Optional, add supported orgIds
     }
     
     @Override
