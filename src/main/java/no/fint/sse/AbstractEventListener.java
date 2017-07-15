@@ -17,24 +17,16 @@ public abstract class AbstractEventListener implements EventListener {
 
     static final int MAX_UUIDS = 50;
 
-    private boolean logUnsupportedActions = true;
-
     @Getter(AccessLevel.PACKAGE)
     private List<String> uuids = new ArrayList<>();
 
     @Getter
     private Set<String> actions = new HashSet<>();
 
-    public void disableLogUnsupportedActions() {
-        this.logUnsupportedActions = false;
-    }
+    @Getter
+    private Set<String> orgIds = new HashSet<>();
 
-    public AbstractEventListener addAction(Enum action) {
-        actions.add(action.name());
-        return this;
-    }
-
-    public AbstractEventListener addActions(Enum[] actions) {
+    public AbstractEventListener addActions(Enum... actions) {
         List<String> actionList = Arrays.stream(actions).map(Enum::name).collect(Collectors.toList());
         this.actions.addAll(actionList);
         return this;
@@ -45,17 +37,35 @@ public abstract class AbstractEventListener implements EventListener {
         return this;
     }
 
+    public AbstractEventListener addOrgIds(String... orgIds) {
+        List<String> orgIdList = Arrays.asList(orgIds);
+        this.orgIds.addAll(orgIdList);
+        return this;
+    }
+
     @Override
     public void onEvent(InboundEvent inboundEvent) {
         String json = inboundEvent.readData();
         Event event = EventUtil.toEvent(json);
-        if (isNewCorrId(event.getCorrId())) {
-            if (actions.size() == 0 || actions.contains(event.getAction())) {
-                onEvent(event);
-            } else if (logUnsupportedActions) {
-                log.warn("Received event (corrId:{}) with an unsupported action: {}", event.getCorrId(), event.getAction());
-            }
+        if (isNewCorrId(event.getCorrId()) && containsAction(event) && containsOrgId(event)) {
+            onEvent(event);
         }
+    }
+
+    private boolean containsOrgId(Event event) {
+        boolean containsOrgId = orgIds.size() == 0 || orgIds.contains(event.getOrgId());
+        if (!containsOrgId) {
+            log.warn("Received event (corrId:{}) with an unsupported orgId: {}", event.getCorrId(), event.getOrgId());
+        }
+        return containsOrgId;
+    }
+
+    private boolean containsAction(Event event) {
+        boolean containsAction = actions.size() == 0 || actions.contains(event.getAction());
+        if (!containsAction) {
+            log.warn("Received event (corrId:{}) with an unsupported action: {}", event.getCorrId(), event.getAction());
+        }
+        return containsAction;
     }
 
     @Synchronized

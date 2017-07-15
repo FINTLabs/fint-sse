@@ -11,7 +11,8 @@ public class TestAbstractEventListener extends AbstractEventListener {
     private Event event;
 
     public TestAbstractEventListener() {
-        addAction(TestActions.MY_TEST_ACTION).addAction(DefaultActions.HEALTH);
+        addActions(TestActions.MY_TEST_ACTION, DefaultActions.HEALTH);
+        addOrgIds("rogfk.no");
     }
 
     @Override

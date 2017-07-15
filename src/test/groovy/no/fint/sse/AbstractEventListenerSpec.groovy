@@ -25,7 +25,7 @@ class AbstractEventListenerSpec extends Specification {
         logger.addAppender(appender)
     }
 
-    def "Receive unique InbountEvent and convert it to Event"() {
+    def "Receive unique InboundEvent and convert it to Event"() {
         given:
         def event = new Event('rogfk.no', 'test', DefaultActions.HEALTH.name(), 'test')
         def inboundEvent = Mock(InboundEvent) {
@@ -112,10 +112,10 @@ class AbstractEventListenerSpec extends Specification {
         names.isEmpty()
     }
 
-    def "Log error when the received event contains unsupported action"() {
+    def "Log warn when event contains unsupported data"() {
         given:
         def inboundEvent = Mock(InboundEvent) {
-            readData() >> new ObjectMapper().writeValueAsString(new Event(action: 'unknown-action'))
+            readData() >> new ObjectMapper().writeValueAsString(event)
         }
 
         when:
@@ -123,12 +123,17 @@ class AbstractEventListenerSpec extends Specification {
 
         then:
         1 * appender.doAppend(_)
+
+        where:
+        event                                                                | _
+        new Event(action: 'unknown-action', orgId: 'rogfk.no')               | _
+        new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid') | _
     }
 
-    def "Do not log error when supported action list is empty"() {
+    def "Do not log warn when supported list is empty"() {
         given:
         def inboundEvent = Mock(InboundEvent) {
-            readData() >> new ObjectMapper().writeValueAsString(new Event(action: TestActions.HEALTH.name()))
+            readData() >> new ObjectMapper().writeValueAsString(event)
         }
         def testListener = new AbstractEventListener() {
             @Override
@@ -141,25 +146,11 @@ class AbstractEventListenerSpec extends Specification {
 
         then:
         0 * appender.doAppend(_)
+
+        where:
+        event                                                                | _
+        new Event(action: 'unknown-action', orgId: 'rogfk.no')               | _
+        new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid') | _
     }
 
-    def "Do not log error when logUnsupportedActions is disabled"() {
-        given:
-        def inboundEvent = Mock(InboundEvent) {
-            readData() >> new ObjectMapper().writeValueAsString(new Event(action: 'unknown-action'))
-        }
-        def testListener = new AbstractEventListener() {
-            @Override
-            void onEvent(Event event) {
-            }
-        }
-        testListener.addActions(TestActions.HEALTH)
-
-        when:
-        testListener.disableLogUnsupportedActions()
-        testListener.onEvent(inboundEvent)
-
-        then:
-        0 * appender.doAppend(_)
-    }
 }
