@@ -11,7 +11,7 @@ apply plugin: 'jacoco'
 
 jar {
     baseName = 'fint-sse'
-    version = '0.0.17-SNAPSHOT'
+    version = '0.0.17'
 }
 
 sourceCompatibility = 1.8
