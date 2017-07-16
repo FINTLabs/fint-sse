@@ -10,7 +10,6 @@ import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.InboundEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractEventListener implements EventListener {
@@ -21,21 +20,7 @@ public abstract class AbstractEventListener implements EventListener {
     private List<String> uuids = new ArrayList<>();
 
     @Getter
-    private Set<String> actions = new HashSet<>();
-
-    @Getter
     private Set<String> orgIds = new HashSet<>();
-
-    public AbstractEventListener addActions(Enum... actions) {
-        List<String> actionList = Arrays.stream(actions).map(Enum::name).collect(Collectors.toList());
-        this.actions.addAll(actionList);
-        return this;
-    }
-
-    public AbstractEventListener addActions(List<String> actions) {
-        this.actions.addAll(actions);
-        return this;
-    }
 
     public AbstractEventListener addOrgIds(String... orgIds) {
         List<String> orgIdList = Arrays.asList(orgIds);
@@ -47,7 +32,7 @@ public abstract class AbstractEventListener implements EventListener {
     public void onEvent(InboundEvent inboundEvent) {
         String json = inboundEvent.readData();
         Event event = EventUtil.toEvent(json);
-        if (isNewCorrId(event.getCorrId()) && containsAction(event) && containsOrgId(event)) {
+        if (isNewCorrId(event.getCorrId()) && containsOrgId(event)) {
             onEvent(event);
         }
     }
@@ -58,14 +43,6 @@ public abstract class AbstractEventListener implements EventListener {
             log.warn("Received event (corrId:{}) with an unsupported orgId: {}", event.getCorrId(), event.getOrgId());
         }
         return containsOrgId;
-    }
-
-    private boolean containsAction(Event event) {
-        boolean containsAction = actions.size() == 0 || actions.contains(event.getAction());
-        if (!containsAction) {
-            log.warn("Received event (corrId:{}) with an unsupported action: {}", event.getCorrId(), event.getAction());
-        }
-        return containsAction;
     }
 
     @Synchronized

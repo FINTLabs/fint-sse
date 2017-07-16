@@ -37,7 +37,6 @@ new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, Ti
 public class MyEventListener extends AbstractEventListener {
     
     public MyEventListener() {
-        addActions(TestActions.MY_TEST_ACTION); // Optional, enum action supported by this listener
         addOrgIds("rogfk.no"); // Optional, add supported orgIds
     }
     
@@ -48,11 +47,8 @@ public class MyEventListener extends AbstractEventListener {
 }
 ```
 
-The `addActions` method is optional to use. If you do not add any actions for the EventListener, all events will be received.
-If the action of the received event is not added as a supported action in the event listener, this will be logged.
-If no actions are added to the event listener, all received events are supported.
-
-The `addOrgIds` work in a similar way. If no orgId is configured, all events are supported.
+The `addOrgIds` method is optional to use. If you do not add any orgIds for the EventListener, all events will be received.
+If the orgId of the received event is not added as a supported orgId in the event listener, this will be logged.
 
 
 ### Connect to the SSE server

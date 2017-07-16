@@ -59,61 +59,9 @@ class AbstractEventListenerSpec extends Specification {
         listener.uuids.size() == AbstractEventListener.MAX_UUIDS
     }
 
-    def "Return configured enum for event listener actions"() {
-        when:
-        def actions = listener.getActions()
-
-        then:
-        actions.size() == 2
-        actions.contains(TestActions.MY_TEST_ACTION.name())
-        actions.contains(TestActions.HEALTH.name())
-    }
-
-    def "Returns configured enum array for event listener actions"() {
+    def "Log warn when event contains unsupported orgId"() {
         given:
-        def testListener = new TestAbstractEventListener()
-        testListener.addActions(TestActions.values())
-
-        when:
-        def actions = testListener.getActions()
-
-        then:
-        actions.size() == 2
-        actions.contains(TestActions.MY_TEST_ACTION.name())
-        actions.contains(TestActions.HEALTH.name())
-    }
-
-    def "Returns configured string list for event listener actions"() {
-        given:
-        def testListener = new TestAbstractEventListener()
-        testListener.addActions([TestActions.MY_TEST_ACTION.name()])
-
-        when:
-        def actions = testListener.getActions()
-
-        then:
-        actions.size() == 2
-        actions.contains(TestActions.MY_TEST_ACTION.name())
-        actions.contains(TestActions.HEALTH.name())
-    }
-
-    def "Returns empty collection for event listener default actions"() {
-        given:
-        def testListener = new AbstractEventListener() {
-            @Override
-            void onEvent(Event event) {
-            }
-        }
-
-        when:
-        def names = testListener.getActions()
-
-        then:
-        names.isEmpty()
-    }
-
-    def "Log warn when event contains unsupported data"() {
-        given:
+        def event = new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid')
         def inboundEvent = Mock(InboundEvent) {
             readData() >> new ObjectMapper().writeValueAsString(event)
         }
@@ -123,21 +71,17 @@ class AbstractEventListenerSpec extends Specification {
 
         then:
         1 * appender.doAppend(_)
-
-        where:
-        event                                                                | _
-        new Event(action: 'unknown-action', orgId: 'rogfk.no')               | _
-        new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid') | _
     }
 
-    def "Do not log warn when supported list is empty"() {
+    def "Do not log warn when supported list of orgIds is empty"() {
         given:
+        def event = new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid')
         def inboundEvent = Mock(InboundEvent) {
             readData() >> new ObjectMapper().writeValueAsString(event)
         }
         def testListener = new AbstractEventListener() {
             @Override
-            void onEvent(Event event) {
+            void onEvent(Event e) {
             }
         }
 
@@ -146,11 +90,6 @@ class AbstractEventListenerSpec extends Specification {
 
         then:
         0 * appender.doAppend(_)
-
-        where:
-        event                                                                | _
-        new Event(action: 'unknown-action', orgId: 'rogfk.no')               | _
-        new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid') | _
     }
 
 }
