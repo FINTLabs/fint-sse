@@ -13,4 +13,16 @@ class FintSseConfigSpec extends Specification {
         defaultInstance.sseThreadInterval == 600000L
         defaultInstance.orgIds.size() == 0
     }
+
+    def "Create new instance with array of orgIds"() {
+        given:
+        def orgIds = ['rogfk.no', 'hfk.no'] as String[]
+
+        when:
+        def config = FintSseConfig.builder().orgIds(orgIds).build()
+
+        then:
+        config.orgIds.size() == 2
+
+    }
 }

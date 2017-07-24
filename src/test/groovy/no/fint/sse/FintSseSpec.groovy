@@ -21,7 +21,7 @@ class FintSseSpec extends Specification {
     void setup() {
         listener = new TestAbstractEventListener()
 
-        def config = FintSseConfig.builder().concurrentConnections(false).build()
+        def config = FintSseConfig.builder().concurrentConnections(false).orgIds(['rogfk.no'] as String[]).build()
         fintSse = new FintSse("http://localhost:${port}/sse", config)
     }
 

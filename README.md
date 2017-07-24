@@ -68,6 +68,7 @@ fintSse.close();
 When creating a new instance it is possible to send in `FintSseConfig` with the following configuration options:
 * sseThreadInterval (long) -  The time between the two SSE connection threads in milliseconds, this is 10 minutes by default
 * concurrentConnections (boolean) - If two connection threads are enabled/disabled. By default the client will run two simultaneous SSE connections.
+* orgIds (String[]) - The orgId(s) supported by the SSE connection. If no orgIds are configured, all values are accepted. If the event contains an orgId that is not supported a message will be logged and the event is not passed on the the event listener.
 
 ```java
 FintSseConfig config = FintSseConfig.builder().sseThreadInterval(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES)).build();

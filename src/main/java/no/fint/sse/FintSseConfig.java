@@ -1,7 +1,13 @@
 package no.fint.sse;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +21,12 @@ public class FintSseConfig {
     private long sseThreadInterval = DEFAULT_SSE_THREAD_INTERVAL;
     @Builder.Default
     private boolean concurrentConnections = true;
+    @Builder.Default
+    private String[] orgIds = new String[]{};
 
-    @Singular
-    private Set<String> orgIds;
+    public Set<String> getOrgIds() {
+        List<String> orgIdList = Arrays.asList(orgIds);
+        return new HashSet<>(orgIdList);
+    }
+
 }
