@@ -8,6 +8,8 @@ import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
+import java.util.concurrent.TimeUnit
+
 @SpringBootTest(classes = TestSseServer, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FintSseSpec extends Specification {
     @LocalServerPort
@@ -119,7 +121,7 @@ class FintSseSpec extends Specification {
 
     def "Verify connection for concurrent connections"() {
         given:
-        def config = FintSseConfig.builder().sseThreadInterval(5).build()
+        def config = FintSseConfig.builder().sseThreadInterval(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES)).build()
         fintSse = new FintSse("http://localhost:${port}/sse/%s", config)
 
         when:

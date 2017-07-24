@@ -36,20 +36,12 @@ new FintSse("http://localhost:8080/sse/%s", TimeUnit.MILLISECONDS.convert(20, Ti
 ```java
 public class MyEventListener extends AbstractEventListener {
     
-    public MyEventListener() {
-        addOrgIds("rogfk.no"); // Optional, add supported orgIds
-    }
-    
     @Override
     public void onEvent(Event event) {
         ...
     }
 }
 ```
-
-The `addOrgIds` method is optional to use. If you do not add any orgIds for the EventListener, all events will be received.
-If the orgId of the received event is not added as a supported orgId in the event listener, this will be logged.
-
 
 ### Connect to the SSE server
 ```java
@@ -76,9 +68,15 @@ boolean connected = fintSse.verifyConnection();
 fintSse.close();
 ```
 
-By default the client will run two simultaneous SSE connections, this can be disabled
+## Configuration
+
+When creating a new instance it is possible to send in `FintSseConfig`. This contains the following configuration options:
+* sseThreadInterval (long) -  The time between the two SSE connection threads in milliseconds, this is 10 minutes by default
+* concurrentConnections (boolean) - If two connection threads are enabled/disabled. By default the client will run two simultaneous SSE connections.
+
 ```java
-fintSse.disableConcurrentConnections();
+FintSseConfig config = FintSseConfig.builder().sseThreadInterval(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES)).build();
+FintSse fintSse = new FintSse("http://localhost/sse/%s", config);
 ```
 
 ## OAuth
