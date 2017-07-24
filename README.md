@@ -65,7 +65,7 @@ fintSse.close();
 
 ## Configuration
 
-When creating a new instance it is possible to send in `FintSseConfig`. This contains the following configuration options:
+When creating a new instance it is possible to send in `FintSseConfig` with the following configuration options:
 * sseThreadInterval (long) -  The time between the two SSE connection threads in milliseconds, this is 10 minutes by default
 * concurrentConnections (boolean) - If two connection threads are enabled/disabled. By default the client will run two simultaneous SSE connections.
 
