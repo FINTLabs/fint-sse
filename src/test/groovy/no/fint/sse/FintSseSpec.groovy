@@ -19,8 +19,8 @@ class FintSseSpec extends Specification {
     void setup() {
         listener = new TestAbstractEventListener()
 
-        fintSse = new FintSse("http://localhost:${port}/sse")
-        fintSse.disableConcurrentConnections()
+        def config = FintSseConfig.builder().concurrentConnections(false).build()
+        fintSse = new FintSse("http://localhost:${port}/sse", config)
     }
 
     def "Connect event listener"() {
@@ -111,7 +111,8 @@ class FintSseSpec extends Specification {
 
     def "Verify connection for concurrent connections"() {
         given:
-        fintSse = new FintSse("http://localhost:${port}/sse/%s", 5)
+        def config = FintSseConfig.builder().sseThreadInterval(5).build()
+        fintSse = new FintSse("http://localhost:${port}/sse/%s", config)
 
         when:
         fintSse.connect(listener)

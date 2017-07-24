@@ -16,15 +16,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 public class FintSse {
-    private static final long DEFAULT_SSE_THREAD_INTERVAL = TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES);
-
-    private long sseThreadInterval;
-    private boolean concurrentConnections = true;
+    private FintSseConfig config;
 
     private FintSseClient fintSseClient;
 
@@ -35,22 +31,22 @@ public class FintSse {
     private AtomicBoolean logConnectionInfo = new AtomicBoolean(true);
 
     public FintSse(String sseUrl) {
-        this(sseUrl, null, DEFAULT_SSE_THREAD_INTERVAL);
+        this(sseUrl, null, FintSseConfig.builder().build());
     }
 
     public FintSse(String sseUrl, TokenService tokenService) {
-        this(sseUrl, tokenService, DEFAULT_SSE_THREAD_INTERVAL);
+        this(sseUrl, tokenService, FintSseConfig.builder().build());
     }
 
-    public FintSse(String sseUrl, long sseThreadInterval) {
-        this(sseUrl, null, sseThreadInterval);
+    public FintSse(String sseUrl, FintSseConfig config) {
+        this(sseUrl, null, config);
     }
 
-    public FintSse(String sseUrl, TokenService tokenService, long sseThreadInterval) {
+    public FintSse(String sseUrl, TokenService tokenService, FintSseConfig config) {
+        this.config = config;
         this.sseUrl = sseUrl;
         verifySseUrl();
         this.tokenService = tokenService;
-        this.sseThreadInterval = sseThreadInterval;
     }
 
     private void verifySseUrl() {
@@ -58,12 +54,8 @@ public class FintSse {
             throw new IllegalArgumentException("SSE url cannot be null or empty");
         } else if (!sseUrl.endsWith("%s")) {
             log.info("No placeholder found in SSE url, disabling concurrent connections");
-            this.concurrentConnections = false;
+            config.setConcurrentConnections(false);
         }
-    }
-
-    public void disableConcurrentConnections() {
-        this.concurrentConnections = false;
     }
 
     public void connect(AbstractEventListener listener, Map<String, String> headers) {
@@ -78,11 +70,11 @@ public class FintSse {
 
     private void connect() {
         createEventSource();
-        if (concurrentConnections) {
+        if (config.isConcurrentConnections()) {
             ExecutorService executorService = Executors.newFixedThreadPool(1);
             executorService.submit(() -> {
                 try {
-                    Thread.sleep(sseThreadInterval);
+                    Thread.sleep(config.getSseThreadInterval());
                     createEventSource();
                 } catch (InterruptedException ignored) {
                 }
@@ -93,6 +85,7 @@ public class FintSse {
     @Synchronized
     private void createEventSource() {
         AbstractEventListener listener = fintSseClient.getListener();
+        listener.setOrgIds(config.getOrgIds());
         EventSource eventSource = EventSource.target(getWebTarget()).build();
         if (logConnectionInfo.get()) {
             log.info("Registering listener {}", listener.getClass().getSimpleName());

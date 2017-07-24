@@ -2,6 +2,7 @@ package no.fint.sse;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.event.model.Event;
@@ -9,7 +10,10 @@ import no.fint.event.model.EventUtil;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.InboundEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public abstract class AbstractEventListener implements EventListener {
@@ -20,13 +24,8 @@ public abstract class AbstractEventListener implements EventListener {
     private List<String> uuids = new ArrayList<>();
 
     @Getter
+    @Setter(AccessLevel.PACKAGE)
     private Set<String> orgIds = new HashSet<>();
-
-    public AbstractEventListener addOrgIds(String... orgIds) {
-        List<String> orgIdList = Arrays.asList(orgIds);
-        this.orgIds.addAll(orgIdList);
-        return this;
-    }
 
     @Override
     public void onEvent(InboundEvent inboundEvent) {

@@ -16,7 +16,7 @@ class AbstractEventListenerSpec extends Specification {
     private Appender appender
 
     void setup() {
-        listener = new TestAbstractEventListener()
+        listener = new TestAbstractEventListener(orgIds: ['rogfk.no'])
 
         appender = Mock(Appender) {
             getName() >> 'MOCK'

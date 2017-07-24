@@ -9,10 +9,6 @@ public class TestAbstractEventListener extends AbstractEventListener {
     @Getter
     private Event event;
 
-    public TestAbstractEventListener() {
-        addOrgIds("rogfk.no");
-    }
-
     @Override
     public void onEvent(Event event) {
         this.event = event;
