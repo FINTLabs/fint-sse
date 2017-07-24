@@ -23,6 +23,14 @@ class FintSseSpec extends Specification {
         fintSse = new FintSse("http://localhost:${port}/sse", config)
     }
 
+    def "Create default instance"() {
+        when:
+        def fintSseInst = new FintSse("http://localhost")
+
+        then:
+        fintSseInst != null
+    }
+
     def "Connect event listener"() {
         when:
         fintSse.connect(listener)
