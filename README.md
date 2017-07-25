@@ -75,6 +75,12 @@ FintSseConfig config = FintSseConfig.builder().sseThreadInterval(TimeUnit.MILLIS
 FintSse fintSse = new FintSse("http://localhost/sse/%s", config);
 ```
 
+It is often required only to configure the organisation ids. There is a `withOrgIds` helper method for this:
+
+```java
+FintSseConfig config = FintSseConfig.withOrgIds(orgIds);
+```
+
 ## OAuth
 
 Enable support for OAuth by sending in `TokenService` when creating a new instance:

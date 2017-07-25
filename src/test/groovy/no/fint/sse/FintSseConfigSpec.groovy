@@ -23,6 +23,16 @@ class FintSseConfigSpec extends Specification {
 
         then:
         config.orgIds.size() == 2
+    }
 
+    def "Create new instance using static factory method"() {
+        given:
+        def orgIds = ['rogfk.no', 'hfk.no'] as String[]
+
+        when:
+        def config = FintSseConfig.withOrgIds(orgIds)
+
+        then:
+        config.orgIds.size() == 2
     }
 }

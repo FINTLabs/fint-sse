@@ -29,4 +29,8 @@ public class FintSseConfig {
         return new HashSet<>(orgIdList);
     }
 
+    public static FintSseConfig withOrgIds(String... orgIds) {
+        return FintSseConfig.builder().orgIds(orgIds).build();
+    }
+
 }
