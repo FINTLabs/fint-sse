@@ -111,7 +111,7 @@ public void myMethod() {
 }
 ```
 
-## OAuth Configuration
+### OAuth Configuration
 
 | Key | Description |
 |-----|-------------|
