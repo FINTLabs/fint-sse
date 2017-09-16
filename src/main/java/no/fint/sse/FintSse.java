@@ -10,10 +10,7 @@ import org.springframework.http.HttpHeaders;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -127,7 +124,7 @@ public class FintSse {
     }
 
     private WebTarget getWebTarget() {
-        Map<String, String> headers = fintSseClient.getHeaders();
+        Map<String, String> headers = new HashMap<>(fintSseClient.getHeaders());
         if (tokenService != null) {
             String accessTokenRequestUrl = config.getAccessTokenRequestUrl(sseUrl);
             log.debug("Adding bearer token in Authorization header, token url: {}", accessTokenRequestUrl);
