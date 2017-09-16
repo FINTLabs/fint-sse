@@ -1,7 +1,7 @@
 package no.fint.sse
 
 import no.fint.event.model.Event
-import no.fint.oauth.TokenService
+import no.fint.sse.oauth.TokenService
 import no.fint.sse.testutils.TestAbstractEventListener
 import no.fint.sse.testutils.TestSseServer
 import org.springframework.boot.context.embedded.LocalServerPort
@@ -146,14 +146,15 @@ class FintSseSpec extends Specification {
 
     def "Add authorization header when TokenService is set"() {
         given:
+        def url = "http://localhost:${port}/oauth/sse/%s"
         def tokenService = Mock(TokenService)
-        fintSse = new FintSse("http://localhost:${port}/oauth/sse/%s", tokenService)
+        fintSse = new FintSse(url, tokenService)
 
         when:
         fintSse.connect(listener)
 
         then:
-        1 * tokenService.getAccessToken() >> 'test123'
+        1 * tokenService.getAccessToken(url) >> 'test123'
         fintSse.isConnected()
     }
 }

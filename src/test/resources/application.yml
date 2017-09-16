@@ -1,3 +1,5 @@
 security:
  basic:
   enabled: false
+
+logging.level.no.fint.oauth.OAuthConfig: DEBUG

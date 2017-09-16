@@ -35,4 +35,39 @@ class FintSseConfigSpec extends Specification {
         then:
         config.orgIds.size() == 2
     }
+
+    def "Get access token request url"() {
+        given:
+        def config = FintSseConfig.builder().build()
+
+        when:
+        def accessTokenRequestUrl = config.getAccessTokenRequestUrl('http://localhost:8080/provider/sse/123')
+
+        then:
+        accessTokenRequestUrl == 'http://localhost:8080/provider/sse/auth-init'
+    }
+
+    def "Return same as input url when sse url does not contain /provider"() {
+        given:
+        def config = FintSseConfig.builder().build()
+
+        when:
+        def accessTokenRequestUrl = config.getAccessTokenRequestUrl('http://localhost/sse')
+
+        then:
+        accessTokenRequestUrl == 'http://localhost/sse'
+    }
+
+    def "Get access token request url with updated accessTokenRequestUri"() {
+        given:
+        def config = FintSseConfig.builder()
+                .accessTokenReplacementUri('/test123')
+                .accessTokenRequestUri('/test234').build()
+
+        when:
+        def accessTokenRequestUrl = config.getAccessTokenRequestUrl('http://localhost:8080/test123/sse')
+
+        then:
+        accessTokenRequestUrl == 'http://localhost:8080/test234'
+    }
 }

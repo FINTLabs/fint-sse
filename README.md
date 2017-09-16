@@ -14,7 +14,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-sse:1.0.0')
+compile('no.fint:fint-sse:1.1.0')
 ```
 
 ## Usage
@@ -84,19 +84,53 @@ FintSseConfig config = FintSseConfig.withOrgIds(orgIds);
 ## OAuth
 
 Enable support for OAuth by sending in `TokenService` when creating a new instance:
+Import the `OAuthConfig` class fro the `@Configuration`.
+
+```java
+@Import(OAuthConfig.class)
+@Configuration
+public class Config {
+    ...
+}
+```
+
+Autoimport the `TokenService` and call `getAccessToken()`.  
+If the property `fint.oauth.enabled` is set to `false` the `TokenService` can be null.
+
 ```java
 @Autowired(required = false)
 private TokenService tokenService;
 
-@PostConstruct
-public void init() {
-    FintSse fintSse = new FintSse("http://localhost:8080/sse/%s", tokenService);
+public void myMethod() {
+    if(tokenService != null) {
+        String accessToken = tokenService.getAccessToken();
+        ...
+    }
 }
 ```
-This will automatically add a bearer token to the authorization header.  
+
+## OAuth Configuration
+
+| Key | Description |
+|-----|-------------|
+| fint.oauth.enabled | true / false. Enables / disables the TokenService. Disabled by default. |
+| fint.oauth.username | Username |
+| fint.oauth.password | Password |
+| fint.oauth.access-token-uri | Access token URI |
+| fint.oauth.client-id | Client id |
+| fint.oauth.client-secret | Client secret |
+| fint.oauth.scope | Scope |
 
 **Basic authentication**  
 Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).  
 To disable add this property: `security.basic.enabled=false`
 
 **[OAuth config](https://github.com/FINTlibs/fint-oauth-token-service#configuration)**
+
+## Log
+
+To enable debug log:
+```
+logging.level.no.fint.oauth.OAuthConfig: DEBUG
+logging.level.no.fint.sse.FintSse: DEBUG
+```

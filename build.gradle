@@ -11,7 +11,7 @@ apply plugin: 'jacoco'
 
 jar {
     baseName = 'fint-sse'
-    version = '1.0.0'
+    version = '1.1.0'
 }
 
 sourceCompatibility = 1.8
@@ -26,10 +26,13 @@ repositories {
 
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.0.14/dependencies.gradle'
 dependencies {
-    compile('org.glassfish.jersey.media:jersey-media-sse:2.25.1')
-    compile('no.fint:fint-event-model:1.0.0')
-    compile('no.fint:fint-oauth-token-service:1.0.0')
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile('org.springframework.security.oauth:spring-security-oauth2:2.1.1.RELEASE')
+    compile('org.glassfish.jersey.media:jersey-media-sse:2.26')
+    compile('org.glassfish.jersey.inject:jersey-hk2:2.26')
     compileOnly('org.slf4j:slf4j-api:1.7.25')
+
+    compile('no.fint:fint-event-model:2.0.0')
 
     testCompile('cglib:cglib-nodep:3.2.5')
     testCompile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")

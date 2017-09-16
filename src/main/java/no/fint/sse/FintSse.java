@@ -2,7 +2,7 @@ package no.fint.sse;
 
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.oauth.TokenService;
+import no.fint.sse.oauth.TokenService;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
 import org.springframework.http.HttpHeaders;
@@ -129,8 +129,9 @@ public class FintSse {
     private WebTarget getWebTarget() {
         Map<String, String> headers = fintSseClient.getHeaders();
         if (tokenService != null) {
-            log.debug("Adding bearer token in Authorization header");
-            String bearerToken = String.format("Bearer %s", tokenService.getAccessToken());
+            String accessTokenRequestUrl = config.getAccessTokenRequestUrl(sseUrl);
+            log.debug("Adding bearer token in Authorization header, token url: {}", accessTokenRequestUrl);
+            String bearerToken = String.format("Bearer %s", tokenService.getAccessToken(accessTokenRequestUrl));
             headers.put(HttpHeaders.AUTHORIZATION, bearerToken);
         }
 

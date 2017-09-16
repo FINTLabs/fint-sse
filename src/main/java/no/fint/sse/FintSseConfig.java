@@ -23,6 +23,10 @@ public class FintSseConfig {
     private boolean concurrentConnections = true;
     @Builder.Default
     private String[] orgIds = new String[]{};
+    @Builder.Default
+    private String accessTokenReplacementUri = "/provider";
+    @Builder.Default
+    private String accessTokenRequestUri = "/provider/sse/auth-init";
 
     public Set<String> getOrgIds() {
         List<String> orgIdList = Arrays.asList(orgIds);
@@ -33,4 +37,13 @@ public class FintSseConfig {
         return FintSseConfig.builder().orgIds(orgIds).build();
     }
 
+    public String getAccessTokenRequestUrl(String sseUrl) {
+        if (sseUrl.contains(accessTokenReplacementUri)) {
+            int endIndex = sseUrl.indexOf(accessTokenReplacementUri);
+            String baseUrl = sseUrl.substring(0, endIndex);
+            return baseUrl + accessTokenRequestUri;
+        } else {
+            return sseUrl;
+        }
+    }
 }
