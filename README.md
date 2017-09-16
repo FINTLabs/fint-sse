@@ -14,8 +14,13 @@ repositories {
     }
 }
 
-compile('no.fint:fint-sse:1.1.2')
+compile('no.fint:fint-sse:1.1.3')
+
+compile('org.glassfish.jersey.core:jersey-client:2.26') 
+compile('org.glassfish.jersey.core:jersey-common:2.26')
 ```
+
+The `jersey-client` and `jersey-common` is required to get the correct version of the dependencies.
 
 ## Usage
 
