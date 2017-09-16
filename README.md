@@ -63,12 +63,14 @@ boolean connected = fintSse.verifyConnection();
 fintSse.close();
 ```
 
-## Configuration
+### SSE Configuration
 
 When creating a new instance it is possible to send in `FintSseConfig` with the following configuration options:
 * **sseThreadInterval (long)** -  The time between the two SSE connection threads in milliseconds, this is 10 minutes by default.
 * **concurrentConnections (boolean)** - If two connection threads are enabled/disabled. By default the client will run two simultaneous SSE connections.
 * **orgIds (String[])** - The orgId(s) supported by the SSE connection. If no orgIds are configured, all values are accepted. If the event received contains an orgId that is not supported a message will be logged and the event is not passed on the the event listener.
+* **accessTokenReplacementUri (String)** - The part of the SSE url that will be replaced when building the access token uri (default: /provider).
+* **accessTokenRequestUri (String)** - The replacement string when building the access token uri (default: /provider/sse/auth-init).
 
 ```java
 FintSseConfig config = FintSseConfig.builder().sseThreadInterval(TimeUnit.MILLISECONDS.convert(5, TimeUnit.MINUTES)).build();
