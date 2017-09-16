@@ -127,8 +127,6 @@ public void myMethod() {
 Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).  
 To disable add this property: `security.basic.enabled=false`
 
-**[OAuth config](https://github.com/FINTlibs/fint-oauth-token-service#configuration)**
-
 ## Log
 
 To enable debug log:
