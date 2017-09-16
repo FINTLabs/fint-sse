@@ -14,7 +14,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-sse:1.1.1')
+compile('no.fint:fint-sse:1.1.2')
 ```
 
 ## Usage
