@@ -20,7 +20,7 @@ compile('org.glassfish.jersey.core:jersey-client:2.26')
 compile('org.glassfish.jersey.core:jersey-common:2.26')
 ```
 
-The `jersey-client` and `jersey-common` is required to get the correct version of the dependencies.
+The `jersey-client` and `jersey-common` is required to get the correct version of the dependencies used by `fint-sse`.
 
 ## Usage
 
@@ -62,6 +62,8 @@ If it is closed `FintSse` will try to reconnect and return false.
 boolean connected = fintSse.verifyConnection();
 ```
 
+`verifyConnection()` will automatically reconnect if a connection is lost.
+
 ### Close connection
 
 ```java
@@ -82,7 +84,7 @@ FintSseConfig config = FintSseConfig.builder().sseThreadInterval(TimeUnit.MILLIS
 FintSse fintSse = new FintSse("http://localhost/sse/%s", config);
 ```
 
-It is often required only to configure the organisation ids. There is a `withOrgIds` helper method for this:
+It is often required only to configure the organisation ids, the `withOrgIds` helper method is created for this:
 
 ```java
 FintSseConfig config = FintSseConfig.withOrgIds(orgIds);
@@ -116,6 +118,9 @@ public void myMethod() {
 }
 ```
 
+When `fint.oauth.enabled` is set to `true`, the `OAuth2RestTemplate` will be injected for `@Autowired RestTemplate`.  
+If the configuration value is not set or set to `fales` a standard `RestTemplate` is ued.
+
 ### OAuth Configuration
 
 | Key | Description |
@@ -129,7 +134,7 @@ public void myMethod() {
 | fint.oauth.scope | Scope |
 
 **Basic authentication**  
-Basic authentication is enabled by default by spring-security (used by fint-oauth-token-service).  
+Basic authentication is enabled by default by spring-security.  
 To disable add this property: `security.basic.enabled=false`
 
 ## Log
