@@ -118,8 +118,8 @@ public void myMethod() {
 }
 ```
 
-When `fint.oauth.enabled` is set to `true`, the `OAuth2RestTemplate` will be injected for `@Autowired RestTemplate`.  
-If the configuration value is not set or set to `fales` a standard `RestTemplate` is ued.
+When `fint.oauth.enabled` is set to `true`, the [`OAuth2RestTemplate`](https://docs.spring.io/spring-security/oauth/apidocs/org/springframework/security/oauth2/client/OAuth2RestTemplate.html) will be injected for `@Autowired RestTemplate`.  
+If the configuration value is not set or set to `false` a standard `RestTemplate` is used.
 
 ### OAuth Configuration
 
