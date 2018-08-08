@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             label 'docker'
-            image 'gradle:4.9.0-jdk8-alpine'
+            image 'gradle:4.6.0-jdk8-alpine'
         }
     }
     stages {
