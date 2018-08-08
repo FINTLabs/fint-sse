@@ -1,5 +1,6 @@
 package no.fint.sse;
 
+import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import no.fint.sse.oauth.TokenService;
@@ -22,6 +23,7 @@ public class FintSse {
     private FintSseClient fintSseClient;
 
     private List<EventSource> eventSources = new ArrayList<>();
+    @Getter
     private String sseUrl;
     private TokenService tokenService;
 
