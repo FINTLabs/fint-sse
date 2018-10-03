@@ -29,6 +29,8 @@ public abstract class AbstractEventListener implements EventListener {
 
     @Override
     public void onEvent(InboundEvent inboundEvent) {
+        if (inboundEvent.isEmpty())
+            return;
         String json = inboundEvent.readData();
         Event event = EventUtil.toEvent(json);
         if (isNewCorrId(event.getCorrId()) && containsOrgId(event)) {

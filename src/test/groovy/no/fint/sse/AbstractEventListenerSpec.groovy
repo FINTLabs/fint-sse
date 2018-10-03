@@ -92,4 +92,22 @@ class AbstractEventListenerSpec extends Specification {
         0 * appender.doAppend(_)
     }
 
+    def "Do not process empty event"() {
+        given:
+        def inBoundEvent = Mock(InboundEvent)
+        def testListener = new AbstractEventListener() {
+            @Override
+            void onEvent(Event event) {
+                throw new AssertionError();
+            }
+        }
+
+        when:
+        testListener.onEvent(inBoundEvent);
+
+        then:
+        noExceptionThrown()
+        1 * inBoundEvent.isEmpty() >> true
+    }
+
 }
