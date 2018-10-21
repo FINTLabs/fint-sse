@@ -137,6 +137,13 @@ If the configuration value is not set or set to `false` a standard `RestTemplate
 Basic authentication is enabled by default by spring-security.  
 To disable add this property: `security.basic.enabled=false`
 
+If the oauth support is disabled, you can also exclude the spring oauth dependency:
+```groovy
+compile('no.fint:fint-sse:<version>') {
+    exclude group: 'org.springframework.security.oauth', module: 'spring-security-oauth2'
+}
+```
+
 ## Log
 
 To enable debug log:
