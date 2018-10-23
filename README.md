@@ -14,7 +14,7 @@ repositories {
     }
 }
 
-compile('no.fint:fint-sse:1.1.3')
+compile('no.fint:fint-sse:1.2.0')
 
 compile('org.glassfish.jersey.core:jersey-client:2.26') 
 compile('org.glassfish.jersey.core:jersey-common:2.26')
