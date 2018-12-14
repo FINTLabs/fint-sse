@@ -9,7 +9,6 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'gradle --no-daemon clean build'
-                archiveArtifacts 'build/libs/*.jar'
             }
         }
         stage('Deploy') {
