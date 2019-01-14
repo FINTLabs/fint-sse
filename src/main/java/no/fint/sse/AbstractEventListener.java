@@ -10,10 +10,8 @@ import no.fint.event.model.EventUtil;
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.InboundEvent;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 public abstract class AbstractEventListener implements EventListener {
@@ -21,7 +19,7 @@ public abstract class AbstractEventListener implements EventListener {
     static final int MAX_UUIDS = 50;
 
     @Getter(AccessLevel.PACKAGE)
-    private List<String> uuids = new ArrayList<>();
+    private Queue<String> uuids = new ConcurrentLinkedQueue<>();
 
     @Getter
     @Setter(AccessLevel.PACKAGE)
@@ -46,18 +44,18 @@ public abstract class AbstractEventListener implements EventListener {
         return containsOrgId;
     }
 
-    @Synchronized
     private boolean isNewCorrId(String corrId) {
         boolean contains = uuids.contains(corrId);
         if (contains) {
             return false;
         } else {
-            if (uuids.size() >= MAX_UUIDS) {
-                uuids.remove(0);
+            try {
+                return uuids.offer(corrId);
+            } finally {
+                while (uuids.size() > MAX_UUIDS) {
+                    uuids.poll();
+                }
             }
-
-            uuids.add(corrId);
-            return true;
         }
     }
 

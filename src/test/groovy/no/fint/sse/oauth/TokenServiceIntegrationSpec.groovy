@@ -1,5 +1,6 @@
 package no.fint.sse.oauth
 
+import no.fint.oauth.TokenService
 import no.fint.sse.testutils.TestSseServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

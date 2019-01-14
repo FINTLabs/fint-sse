@@ -1,5 +1,6 @@
 package no.fint.sse.oauth
 
+import no.fint.oauth.OAuthConfig
 import spock.lang.Specification
 
 class OAuthConfigSpec extends Specification {
@@ -23,7 +24,7 @@ class OAuthConfigSpec extends Specification {
 
         then:
         restTemplate != null
-        restTemplate.resource.grantType == 'password'
+        restTemplate.resource != null
     }
 
     def "Create TokenService"() {

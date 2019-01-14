@@ -1,5 +1,7 @@
 package no.fint.sse.oauth
 
+import no.fint.oauth.OAuthTokenProps
+import no.fint.oauth.TokenService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.client.OAuth2RestTemplate
 import org.springframework.security.oauth2.common.OAuth2AccessToken
