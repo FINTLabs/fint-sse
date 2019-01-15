@@ -127,11 +127,11 @@ public class FintSse {
         return eventSources.size() > 0 && eventSources.stream().allMatch(EventSource::isOpen);
     }
 
-    public long getLastUpdated() {
+    public long getAge() {
         if (fintSseClient == null) {
-            return -1;
+            return Long.MAX_VALUE;
         }
-        return fintSseClient.getListener().getLastUpdated();
+        return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - fintSseClient.getListener().getLastUpdated());
     }
 
     private WebTarget getWebTarget() {

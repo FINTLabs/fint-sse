@@ -37,11 +37,11 @@ class FintSseSpec extends Specification {
         when:
         fintSse.connect(listener)
         Thread.sleep(150)
-        def lastUpdated = fintSse.lastUpdated
+        def age = fintSse.age
 
         then:
         fintSse.isConnected()
-        lastUpdated > 0
+        age < 200
     }
 
     def "Connect event listener with header"() {

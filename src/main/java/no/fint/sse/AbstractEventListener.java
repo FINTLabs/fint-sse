@@ -30,7 +30,7 @@ public abstract class AbstractEventListener implements EventListener {
 
     @Override
     public void onEvent(InboundEvent inboundEvent) {
-        lastUpdated = System.currentTimeMillis();
+        lastUpdated = System.nanoTime();
         if (inboundEvent.isEmpty())
             return;
         String json = inboundEvent.readData();
