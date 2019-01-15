@@ -33,12 +33,15 @@ class FintSseSpec extends Specification {
         fintSseInst != null
     }
 
-    def "Connect event listener"() {
+    def "Connect event listener and wait for event"() {
         when:
         fintSse.connect(listener)
+        Thread.sleep(150)
+        def lastUpdated = fintSse.lastUpdated
 
         then:
         fintSse.isConnected()
+        lastUpdated > 0
     }
 
     def "Connect event listener with header"() {
