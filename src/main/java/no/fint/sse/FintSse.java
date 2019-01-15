@@ -125,6 +125,13 @@ public class FintSse {
         return eventSources.size() > 0 && eventSources.stream().allMatch(EventSource::isOpen);
     }
 
+    public long getLastUpdated() {
+        if (fintSseClient == null) {
+            return -1;
+        }
+        return fintSseClient.getListener().getLastUpdated();
+    }
+
     private WebTarget getWebTarget() {
         Map<String, String> headers = new HashMap<>(fintSseClient.getHeaders());
         if (tokenService != null) {

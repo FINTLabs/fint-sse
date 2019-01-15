@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Import(OAuthConfig.class)
@@ -20,27 +25,47 @@ import javax.annotation.PostConstruct;
 @SpringBootApplication
 public class TestSseServer {
 
+    private ScheduledExecutorService scheduledExecutorService;
+
     @PostConstruct
     public void init() {
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         log.info("Test server started");
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        scheduledExecutorService.shutdownNow();
     }
 
     @GetMapping("/sse")
     public SseEmitter subscribe() {
         log.info("SSE client connected");
-        return new SseEmitter();
+        return schedule(new SseEmitter());
     }
 
     @GetMapping("/sse/{id}")
     public SseEmitter subscribe(@PathVariable String id) {
         log.info("SSE client connected, id:{}", id);
-        return new SseEmitter();
+        return schedule(new SseEmitter());
     }
 
     @GetMapping("/oauth/sse/{id}")
     public SseEmitter subscribe(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String id) {
         log.info("SSE client connected, auth-header:{} id:{}", auth, id);
-        return new SseEmitter();
+        return schedule(new SseEmitter());
+    }
+
+    SseEmitter schedule(SseEmitter emitter) {
+        scheduledExecutorService.schedule(() -> {
+            try {
+                System.out.printf("%tT Sending event...\n", System.currentTimeMillis());
+                emitter.send(SseEmitter.event().comment("Test"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, 100, TimeUnit.MILLISECONDS);
+        return emitter;
     }
 
     public static void main(String[] args) {
