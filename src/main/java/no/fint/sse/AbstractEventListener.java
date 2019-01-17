@@ -21,7 +21,7 @@ public abstract class AbstractEventListener implements EventListener {
     static final int MAX_UUIDS = 50;
 
     @Getter(AccessLevel.PACKAGE)   
-    private volatile long lastUpdated;
+    private volatile long lastUpdated = System.nanoTime();
 
     @Getter(AccessLevel.PACKAGE)
     private List<String> uuids = new ArrayList<>();
