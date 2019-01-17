@@ -62,7 +62,7 @@ class AbstractEventListenerSpec extends Specification {
 
     def "Log warn when event contains unsupported orgId"() {
         given:
-        def event = new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid', corrId: 'test')
+        def event = new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid')
         def inboundEvent = Mock(InboundEvent) {
             readData() >> new ObjectMapper().writeValueAsString(event)
         }
@@ -76,7 +76,7 @@ class AbstractEventListenerSpec extends Specification {
 
     def "Do not log warn when supported list of orgIds is empty"() {
         given:
-        def event = new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid', corrId: 'test')
+        def event = new Event(action: TestActions.HEALTH.name(), orgId: 'unknown-orgid')
         def inboundEvent = Mock(InboundEvent) {
             readData() >> new ObjectMapper().writeValueAsString(event)
         }
