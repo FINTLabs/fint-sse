@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class FintSse {
     private FintSseConfig config;
 
+    @Getter
     private FintSseClient fintSseClient;
 
     private List<EventSource> eventSources = new ArrayList<>();
