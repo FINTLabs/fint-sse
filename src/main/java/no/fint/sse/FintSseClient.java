@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-class FintSseClient {
+public class FintSseClient {
     private AbstractEventListener listener;
     private Map<String, String> headers;
 
