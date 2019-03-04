@@ -39,7 +39,7 @@ class AbstractEventListenerSpec extends Specification {
         def receivedEvent = listener.getEvent()
 
         then:
-        listener.lastUpdated + 100000 > System.currentTimeMillis()
+        listener.lastUpdated + 100000 > System.nanoTime()
         listener.uuids.size() == 1
         listener.uuids[0] == event.getCorrId()
         receivedEvent.corrId == event.corrId
