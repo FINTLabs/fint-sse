@@ -27,6 +27,7 @@ class AbstractEventListenerSpec extends Specification {
 
     def "Receive unique InboundEvent and convert it to Event"() {
         given:
+        def start = listener.lastUpdated
         def event = new Event('rogfk.no', 'test', DefaultActions.HEALTH.name(), 'test')
         def inboundEvent = Mock(InboundEvent) {
             readData() >> new ObjectMapper().writeValueAsString(event)
@@ -39,7 +40,7 @@ class AbstractEventListenerSpec extends Specification {
         def receivedEvent = listener.getEvent()
 
         then:
-        listener.lastUpdated + 100000 > System.nanoTime()
+        listener.lastUpdated > start
         listener.uuids.size() == 1
         listener.uuids[0] == event.getCorrId()
         receivedEvent.corrId == event.corrId
