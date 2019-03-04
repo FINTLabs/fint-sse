@@ -12,14 +12,16 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 public class FintSse {
     private FintSseConfig config;
 
+    @Getter
     private FintSseClient fintSseClient;
 
     private List<EventSource> eventSources = new ArrayList<>();
@@ -28,6 +30,8 @@ public class FintSse {
     private TokenService tokenService;
 
     private AtomicBoolean logConnectionInfo = new AtomicBoolean(true);
+
+    private ScheduledExecutorService scheduledExecutorService;
 
     public FintSse(String sseUrl) {
         this(sseUrl, null, FintSseConfig.builder().build());
@@ -46,6 +50,9 @@ public class FintSse {
         this.sseUrl = sseUrl;
         verifySseUrl();
         this.tokenService = tokenService;
+        if (config.isConcurrentConnections()) {
+            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        }
     }
 
     private void verifySseUrl() {
@@ -70,14 +77,7 @@ public class FintSse {
     private void connect() {
         createEventSource();
         if (config.isConcurrentConnections()) {
-            ExecutorService executorService = Executors.newFixedThreadPool(1);
-            executorService.submit(() -> {
-                try {
-                    Thread.sleep(config.getSseThreadInterval());
-                    createEventSource();
-                } catch (InterruptedException ignored) {
-                }
-            });
+            scheduledExecutorService.schedule(this::createEventSource, config.getSseThreadInterval(), TimeUnit.MILLISECONDS);
         }
     }
 
@@ -105,6 +105,9 @@ public class FintSse {
         for (int i = 0; i < eventSources.size(); i++) {
             eventSources.get(i).close();
         }
+        if (scheduledExecutorService != null) {
+            scheduledExecutorService.shutdownNow();
+        }
     }
 
     public boolean verifyConnection() {
@@ -123,6 +126,13 @@ public class FintSse {
 
     public boolean isConnected() {
         return eventSources.size() > 0 && eventSources.stream().allMatch(EventSource::isOpen);
+    }
+
+    public long getAge() {
+        if (fintSseClient == null) {
+            return Long.MAX_VALUE;
+        }
+        return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - fintSseClient.getListener().getLastUpdated());
     }
 
     private WebTarget getWebTarget() {
