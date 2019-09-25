@@ -3,7 +3,7 @@ package no.fint.sse;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import no.fint.sse.oauth.TokenService;
+import no.fint.oauth.TokenService;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.media.sse.SseFeature;
 import org.springframework.http.HttpHeaders;
@@ -102,8 +102,8 @@ public class FintSse {
     }
 
     public void close() {
-        for (int i = 0; i < eventSources.size(); i++) {
-            eventSources.get(i).close();
+        for (EventSource eventSource : eventSources) {
+            eventSource.close();
         }
         if (scheduledExecutorService != null) {
             scheduledExecutorService.shutdownNow();
