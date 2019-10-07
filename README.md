@@ -119,7 +119,17 @@ public void myMethod() {
 ```
 
 When `fint.oauth.enabled` is set to `true`, the [`OAuth2RestTemplate`](https://docs.spring.io/spring-security/oauth/apidocs/org/springframework/security/oauth2/client/OAuth2RestTemplate.html) will be injected for `@Autowired RestTemplate`.  
-If the configuration value is not set or set to `false` a standard `RestTemplate` is used.
+
+If the configuration value is not set or set to `false`, no `RestTemplate` will be created.  In this case, create a normal RestTemplate:
+
+```java
+@ConditionalOnProperty(name = OAuthTokenProps.ENABLE_OAUTH, 
+                        matchIfMissing = true, havingValue = "false")
+@Bean
+public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder.build();
+}
+```
 
 ### OAuth Configuration
 
