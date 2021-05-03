@@ -1,11 +1,11 @@
 plugins {
     id 'com.github.ben-manes.versions' version '0.25.0'
-    id 'com.jfrog.bintray' version '1.8.4'
     id 'com.github.kt3k.coveralls' version '2.8.4'
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
 
@@ -29,8 +29,8 @@ dependencies {
     compile('org.glassfish.jersey.inject:jersey-hk2:2.29.1')
     compileOnly("org.slf4j:slf4j-api:${slf4jVersion}")
 
-    compile('no.fint:fint-oauth-token-service:1.6.0-rc-1')
-    compile('no.fint:fint-event-model:3.0.0')
+    compile('no.fint:fint-oauth-token-service:1.6.1-rc-3')
+    compile('no.fint:fint-event-model:3.0.1-rc-1')
 
     testCompile("cglib:cglib-nodep:${cglibVersion}")
     testCompile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -51,28 +51,5 @@ jacocoTestReport {
     }
 }
 
-group 'no.fint'
-
-if (project.hasProperty('reposiliteUsername') && project.hasProperty('reposiliteToken')) {
-    publishing {
-        repositories {
-            maven {
-                url "https://repo.fintlabs.no/releases"
-                credentials {
-                    username = reposiliteUsername
-                    password = reposiliteToken
-                }
-                authentication {
-                    basic(BasicAuthentication)
-                }
-            }
-        }
-        publications {
-            maven(MavenPublication) {
-                from(components.java)
-            }
-        }
-    }
-}
-
 apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/dependencyReport.gradle'
+apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/reposilite.gradle'
