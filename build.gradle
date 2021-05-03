@@ -12,11 +12,12 @@ apply plugin: 'jacoco'
 sourceCompatibility = 1.8
 
 repositories {
-    mavenLocal()
-    jcenter()
     maven {
-        url  "http://dl.bintray.com/fint/maven"
+        url 'https://repo.fintlabs.no/releases'
     }
+    mavenCentral()
+    jcenter()
+    mavenLocal()
 }
 
 apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.8.0/dependencies.gradle'
@@ -50,8 +51,28 @@ jacocoTestReport {
     }
 }
 
-if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.8.0/bintray.gradle'
+group 'no.fint'
+
+if (project.hasProperty('reposiliteUsername') && project.hasProperty('reposiliteToken')) {
+    publishing {
+        repositories {
+            maven {
+                url "https://repo.fintlabs.no/releases"
+                credentials {
+                    username = reposiliteUsername
+                    password = reposiliteToken
+                }
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        }
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
 }
 
 apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/dependencyReport.gradle'
