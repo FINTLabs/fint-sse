@@ -1,11 +1,11 @@
 plugins {
     id 'com.github.ben-manes.versions' version '0.20.0'
-    id 'com.jfrog.bintray' version '1.8.4'
     id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'groovy'
 apply plugin: 'jacoco'
 
@@ -15,7 +15,7 @@ repositories {
     mavenLocal()
     jcenter()
     maven {
-        url  "http://dl.bintray.com/fint/maven"
+        url 'https://repo.fintlabs.no/releases'
     }
 }
 
@@ -28,7 +28,7 @@ dependencies {
     compile('org.glassfish.jersey.inject:jersey-hk2:2.27')
     compileOnly('org.slf4j:slf4j-api:1.7.25')
 
-    compile('no.fint:fint-event-model:3.0.0')
+    compile('no.fint:fint-event-model:3.0.1')
 
     testCompile("cglib:cglib-nodep:${cglibVersion}")
     testCompile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
@@ -53,6 +53,4 @@ jacocoTestReport {
     }
 }
 
-if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
-    apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.5.0/bintray.gradle'
-}
+apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/reposilite.gradle'
