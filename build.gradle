@@ -30,7 +30,7 @@ dependencies {
     compileOnly("org.slf4j:slf4j-api:${slf4jVersion}")
 
     compile('no.fint:fint-oauth-token-service:1.6.1')
-    compile('no.fint:fint-event-model:3.0.1-rc-1')
+    compile('no.fint:fint-event-model:3.0.2')
 
     testCompile("cglib:cglib-nodep:${cglibVersion}")
     testCompile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
