@@ -53,10 +53,6 @@ test {
 apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/reposilite.gradle'
 
 
-jar{
-    enabled = false
-}
-
 bootJar{
-    enabled = true
+    enabled = false
 }
