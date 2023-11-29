@@ -4,8 +4,8 @@ import no.fint.event.model.Event
 import no.fint.oauth.TokenService
 import no.fint.sse.testutils.TestAbstractEventListener
 import no.fint.sse.testutils.TestSseServer
-import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.server.LocalServerPort
 import spock.lang.Specification
 
 import java.util.concurrent.TimeUnit
