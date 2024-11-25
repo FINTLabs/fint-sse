@@ -1,43 +1,64 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
-    id 'com.github.ben-manes.versions' version '0.25.0'
-    id 'com.github.kt3k.coveralls' version '2.8.4'
+    id 'org.springframework.boot' version "${springBootVersion}" apply false
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'maven-publish'
+    id 'java-library'
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'groovy'
-apply plugin: 'jacoco'
+group = 'no.fintlabs'
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
-sourceCompatibility = 1.8
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
 
 repositories {
+    mavenLocal()
     maven {
         url 'https://repo.fintlabs.no/releases'
     }
     mavenCentral()
-    jcenter()
-    mavenLocal()
 }
 
-apply from: 'https://raw.githubusercontent.com/FINTlibs/fint-buildscripts/v1.8.0/dependencies.gradle'
+dependencyManagement {
+    imports {
+        mavenBom SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
 dependencies {
-    compile("org.projectlombok:lombok:${lombokVersion}")
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    compile('org.springframework.security.oauth:spring-security-oauth2:2.1.1.RELEASE')
-    compile('org.glassfish.jersey.media:jersey-media-sse:2.29.1')
-    compile('org.glassfish.jersey.inject:jersey-hk2:2.29.1')
-    compileOnly("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
 
-    compile('no.fint:fint-oauth-token-service:1.6.1')
-    compile('no.fint:fint-event-model:3.0.2')
+    implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+    implementation('org.glassfish.jersey.media:jersey-media-sse:2.45')
+    implementation('org.glassfish.jersey.inject:jersey-hk2:2.29.1')
 
-    testCompile("cglib:cglib-nodep:${cglibVersion}")
-    testCompile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
-    testCompile("org.spockframework:spock-core:${spockSpringVersion}")
-    testCompile("org.spockframework:spock-spring:${spockSpringVersion}")
+    implementation('no.fintlabs:fint-oauth-token-service:2.0.0-rc-5')
+    implementation('no.fint:fint-event-model:3.0.2')
+
+    implementation("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    runtimeOnly("org.slf4j:slf4j-api:1.7.28")
+
+    testImplementation("cglib:cglib-nodep:3.3.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    testImplementation("org.spockframework:spock-core:2.4-M4-groovy-4.0")
+    testImplementation("org.spockframework:spock-spring:2.4-M4-groovy-4.0")
 }
+
 
 test {
     testLogging {
@@ -45,11 +66,4 @@ test {
     }
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
-apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/dependencyReport.gradle'
-apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/reposilite.gradle'
+apply from: 'https://raw.githubusercontent.com/FINTLabs/fint-buildscripts/master/reposilite.ga.gradle'
