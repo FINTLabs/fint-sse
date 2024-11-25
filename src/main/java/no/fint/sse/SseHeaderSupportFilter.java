@@ -1,7 +1,8 @@
 package no.fint.sse;
 
-import javax.annotation.Priority;
-import javax.validation.constraints.NotNull;
+import jakarta.annotation.Priority;
+import jakarta.validation.constraints.NotNull;
+
 import javax.ws.rs.Priorities;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
