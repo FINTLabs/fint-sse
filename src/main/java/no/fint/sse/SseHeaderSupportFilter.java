@@ -2,10 +2,10 @@ package no.fint.sse;
 
 import jakarta.annotation.Priority;
 import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 
-import javax.ws.rs.Priorities;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
 import java.io.IOException;
 
 @Priority(Priorities.HEADER_DECORATOR)
