@@ -1,7 +1,8 @@
 package no.fint.sse;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 class SseHeaderSupportFeature implements Feature {
     private final SseHeaderSupportFilter filter;
