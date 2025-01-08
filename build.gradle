@@ -44,7 +44,7 @@ dependencies {
     api ('org.glassfish.jersey.media:jersey-media-sse:3.1.9')
     api ('org.glassfish.jersey.inject:jersey-hk2:3.1.9')
 
-    api ("no.fintlabs:fint-oauth-token-service:2.0.0-rc-7")
+    api ("no.fintlabs:fint-oauth-token-service:2.1.0-rc-1")
     api ('no.fint:fint-event-model:3.0.2')
 
     implementation("org.projectlombok:lombok")
